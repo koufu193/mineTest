@@ -77,16 +77,6 @@ public class PacketData {
             try(DataInputStream dataInput = new DataInputStream(new ByteArrayInputStream(uncompressedData))){
                 data = getPacketDataFromData(Util.readVarInt(dataInput), dataInput, sender, state);
             }
-            File f=new File(state.name()+".txt");
-            if(!f.exists()) {
-                try (BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(f))) {
-                    for(byte b:uncompressedData){
-                        output.write(b);
-                    }
-                    output.flush();
-                    System.out.println("wrote "+f.getAbsolutePath());
-                }
-            }
 
         }
         return data;
@@ -95,7 +85,7 @@ public class PacketData {
         PacketInfo info=PacketType.getPacketDatFromPacketStatus(state,sender).get(PacketID);
         if(info!=null) {
             PacketData data=new PacketData(info);
-            PacketFieldType[] types = info.types;
+            PacketFieldType<?>[] types = info.types;
             for (int i = 0; i < types.length; i++) {
                 data.getData().get(i).value = types[i].read(input);
             }

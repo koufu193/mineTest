@@ -142,78 +142,77 @@ public class NBT {
     }
     @Override
     public String toString() {
-        StringBuilder builder=new StringBuilder("NBT:"+(name.isBlank()?"None":name)+"{\n");
-        if(value==null) {
-            for (NBT nbt : data) {
-                builder.append("  ").append(nbt.toString(1)).append("\n");
-            }
-            builder.append("}");
-        }else{
-            builder.append("  ").append(value).append("\n}");
+        if (value != null) {
+            return (name.isBlank() ? "None" : name) + ":" + value + "\n";
         }
+        StringBuilder builder = new StringBuilder((name.isBlank() ? "None" : name) + "{\n");
+        for (NBT nbt : data) {
+            builder.append(nbt.toString(1)).append("\n");
+        }
+        builder.append("}");
         return builder.toString();
     }
-    public String toString(int num){
-        StringBuilder builder=new StringBuilder("NBT:"+(name.isBlank()?"None":name)+"{\n");
-        StringBuilder kuhaku=new StringBuilder();
-        for(int i=0;i<num;i++){
-            kuhaku.append("  ");
+    public String toString(int num) {
+        StringBuilder kuhaku = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            kuhaku.append(" ");
         }
-        String kuu=kuhaku.toString();
-        if(value==null) {
-            for (NBT nbt : data) {
-                builder.append(kuu).append("  ").append(nbt.toString(num + 1)).append("\n");
-            }
-            builder.append(kuu).append("}");
-        }else{
-            builder.append(kuu).append("  ").append(value).append("\n").append(kuu).append("}");
+
+        String kuu = kuhaku.toString();
+        if (value != null) {
+            return kuu+name+":"+value;
         }
+        StringBuilder builder = new StringBuilder(kuu+"NBT:" + (name.isBlank() ? "None" : name) + "{\n");
+        for (NBT nbt : data) {
+            builder.append(kuu).append(" ").append(nbt.toString(num + 1)).append("\n");
+        }
+        builder.append(kuu).append(kuu).append("}");
         return builder.toString();
     }
-    public static NBT readDataFromDataInputStream(DataInputStream input) throws IOException {
-        NBTIndex count = new NBTIndex(-1);
+    public static NBT readDataFromDataInputStream(DataInputStream input) throws IOException{
+        return readDataFromDataInputStream(input,new NBT("",10),new NBTIndex(-1));
+    }
+    public static NBT readDataFromDataInputStream(DataInputStream input,NBT compound_nbt,NBTIndex index) throws IOException {
         int data;
-        NBT nbt = new NBT("",10);
         while (true) {
             data = input.readByte();
             if (data == 10) {
                 NBT nbt1 = new NBT(NBTUtil.getName(input), data);
-                putData(nbt, nbt1, count);
-                count.setLastIndex(getLen(count.getLength(), nbt, count) - 1);
-                count.next(-1);
-                System.out.println("start one data");
+                putData(compound_nbt, nbt1, index);
+                index.setLastIndex(getLen(index.getLength(), compound_nbt, index) - 1);
+                index.next(-1);
             } else if (data == 3) {
-                putData(nbt, NBTUtil.readInt(input), count);
+                putData(compound_nbt, NBTUtil.readInt(input), index);
             } else if (data == 6) {
-                putData(nbt, NBTUtil.readDouble(input), count);
+                putData(compound_nbt, NBTUtil.readDouble(input), index);
             } else if (data == 1) {
-                putData(nbt, NBTUtil.readByte(input), count);
+                putData(compound_nbt, NBTUtil.readByte(input), index);
             } else if (data == 4) {
-                putData(nbt, NBTUtil.readLong(input), count);
+                putData(compound_nbt, NBTUtil.readLong(input), index);
             } else if (data == 2) {
-                putData(nbt, NBTUtil.readShort(input), count);
+                putData(compound_nbt, NBTUtil.readShort(input), index);
             } else if (data == 5) {
-                putData(nbt, NBTUtil.readFloat(input), count);
+                putData(compound_nbt, NBTUtil.readFloat(input), index);
             } else if (data == 9) {
-                putData(nbt, NBTUtil.readList(input), count);
+                putData(compound_nbt, NBTUtil.readList(input,null), index);
             } else if (data == 8) {
-                 putData(nbt, NBTUtil.readString(input), count);
+                 putData(compound_nbt, NBTUtil.readString(input), index);
             } else if (data == 0) {
-                count.back();
-                if(count.getLength()<2){
-                    return nbt;
+                index.back();
+                if(index.getLength()<2){
+                    return compound_nbt;
                 }else{
-                    count.setLastIndex(-1);
+                    index.setLastIndex(-1);
                 }
             } else if (data == 11) {
-                putData(nbt, NBTUtil.readIntList(input), count);
+                putData(compound_nbt, NBTUtil.readIntList(input), index);
             } else if (data == 12) {
-                putData(nbt, NBTUtil.readLongList(input), count);
+                putData(compound_nbt, NBTUtil.readLongList(input), index);
             }else if(data==7){
-                putData(nbt,NBTUtil.readByteList(input),count);
+                putData(compound_nbt,NBTUtil.readByteList(input), index);
             } else {
                 System.out.println("What is " + data);
-                return nbt;
+                return compound_nbt;
             }
         }
     }

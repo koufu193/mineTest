@@ -148,7 +148,6 @@ public class PacketFieldType<K>{
         public void write(Identifier value, DataOutputStream output) throws IOException {
             Util.writeString(value.toString(), StandardCharsets.UTF_8,output);
         }
-
         @Override
         public Identifier read(DataInputStream input) throws IOException {
             return Identifier.getInstance(input);

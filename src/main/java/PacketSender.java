@@ -28,14 +28,17 @@ public class PacketSender {
         checkSocket();
         socket.close();
     }
-    public void sendLoginHandShake() throws IOException{
+    public void sendHandshake(int next_state) throws IOException{
         checkSocket();
         Util.sendPacket(0x00,Util.getData(b->{
             Util.writeVarInt(757,b);
             Util.writeString(host, StandardCharsets.UTF_8,b);
             b.writeShort(port);
-            Util.writeVarInt(2,b);
+            Util.writeVarInt(next_state,b);
         }),output);
+    }
+    public void sendLoginHandshake() throws IOException{
+        sendHandshake(2);
         state= PacketType.PacketState.Login;
     }
     public void sendPacket(PacketData packet) throws IOException{

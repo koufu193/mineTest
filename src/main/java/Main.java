@@ -18,7 +18,7 @@ public class Main {
         UUID uuid;
         try{
             sender = new PacketSender("localhost", 25565);
-            sender.sendLoginHandShake();
+            sender.sendLoginHandshake();
             Util.sendPacket(0x00, Util.getData(b -> Util.writeString("example", StandardCharsets.UTF_8, b)), sender.getOutput());
             System.out.println(PacketType.Login.Client.Set_Compression.PacketID);
             PacketData data = PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state);
@@ -29,11 +29,8 @@ public class Main {
             System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state, sender.compressed_chunk_size));
             sender.state= PacketType.PacketState.Play;
             PacketData d=PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state, sender.compressed_chunk_size);
-            try(DataOutputStream output=new DataOutputStream(new FileOutputStream("qwerty.txt"))){
-                PacketValue value=d.getData().get(6);
-                ((NBT)value.value).write(output);
-                System.out.println(value.value);
-            }
+            System.out.println(d);
+            System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size));
             Util.sendPacket(0x03, Util.getData(b -> Util.writeString("aaaaa", StandardCharsets.UTF_8, b)), sender.getOutput(), sender.compressed_chunk_size);
             while (true) {
                 Thread.sleep(1000);

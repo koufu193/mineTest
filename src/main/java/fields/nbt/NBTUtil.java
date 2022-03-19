@@ -1,10 +1,14 @@
 package fields.nbt;
 
 import fields.NBT;
+import sun.misc.Unsafe;
 
+import javax.print.attribute.standard.JobName;
+import javax.script.ScriptEngine;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class NBTUtil {
     public static NBT readLong(DataInputStream input) throws IOException{
@@ -28,14 +32,27 @@ public class NBTUtil {
     public static NBT readFloat(DataInputStream input) throws IOException{
         return new NBT(getName(input),input.readFloat(),5);
     }
-    public static NBT readList(DataInputStream input) throws IOException{
-        NBT list=new NBT(getName(input),9);
+    private static NBT readCompound(DataInputStream input) throws IOException{
+        NBT nbt=new NBT("",10);
+        return NBT.readDataFromDataInputStream(input,nbt,new NBTIndex(-1));
+    }
+    public static NBT readList(DataInputStream input,String name) throws IOException{
+        NBT list=new NBT(name==null?getName(input):name,9);
         int TypeID=input.readByte();
         list.list_type=TypeID;
         int size=input.readInt();
-        if(0<=size) {
+        if(TypeID==0&&0<size){
+            throw new RuntimeException("TypeIDは0なのにsizeは1以上です");
+        }
+        if(0<size) {
             for (int i = 0; i < size; i++) {
-                list.data.add(readNBT(TypeID, input,false));
+                NBT nbt=(TypeID!=10?readNBT(TypeID, input,false):readCompound(input));
+                if(nbt==null){
+                    System.out.println("nbt is null");
+                }else {
+                    nbt.name+=" "+i;
+                    list.data.add(nbt);
+                }
             }
         }else{
             System.out.println("size is "+size+" "+list.name);
@@ -78,19 +95,14 @@ public class NBTUtil {
         }
         return list;
     }
-    public static NBT readCompound(DataInputStream input,boolean needName) throws IOException{
-        NBT compound=new NBT(needName?getName(input):"",10);
-        NBT result=NBT.readDataFromDataInputStream(input);
-        compound.data.addAll(result.data);
-        return compound;
-    }
     public static NBT readNBT(int TypeID,DataInputStream input,boolean needName) throws IOException{
         String name="";
         if(TypeID<0){
             TypeID=input.readByte();
+            System.out.println("read "+TypeID);
         }
         if(TypeID==0) {
-            return new NBT("",TypeID);
+            return null;
         }
         if(needName){
             name=getName(input);
@@ -142,9 +154,10 @@ public class NBTUtil {
                 System.out.println("size is " + size + " " + list.name);
             }
             return list;
-        }else if(TypeID==10){
-            NBT result=readCompound(input,needName);
-            return result;
+        }else if(TypeID==10) {
+            return NBT.readDataFromDataInputStream(input, new NBT(name, 10),new NBTIndex(-1));
+        }else if(TypeID==9){
+            return readList(input,name);
         }else{
             System.out.println("What is "+TypeID);
             return null;
