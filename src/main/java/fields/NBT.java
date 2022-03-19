@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NBT {
+public class NBT implements Cloneable{
     public String name;
     public List<NBT> data = new ArrayList<>();
     Object value;
@@ -57,6 +57,10 @@ public class NBT {
             result.forEach(b->list.addAll(b.data));
         }
         return result;
+    }
+    public NBT add(NBT nbt){
+        this.data.add(nbt);
+        return this;
     }
     public void write(DataOutputStream output) throws IOException{
         write(output,true,true);
@@ -238,5 +242,17 @@ public class NBT {
             System.out.println(count);
             throw e;
         }
+    }
+
+    @Override
+    public NBT clone() {
+        NBT result=new NBT(name,type,list_type);
+        result.value=this.value;
+        List<NBT> list=new ArrayList<>();
+        for(NBT nbt:data){
+            list.add(nbt.clone());
+        }
+        result.data=list;
+        return result;
     }
 }
