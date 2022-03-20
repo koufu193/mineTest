@@ -1,9 +1,9 @@
 package Packet;
 
-public class PacketValue {
-    public final PacketFieldType TYPE;
-    public Object value;
-    public PacketValue(PacketFieldType type,Object value){
+public class PacketValue<T>{
+    public final PacketFieldType<T> TYPE;
+    public T value;
+    public PacketValue(PacketFieldType<T> type,T value){
         if(type==null){
             throw new IllegalArgumentException("typeがnullです");
         }

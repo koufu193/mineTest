@@ -12,6 +12,7 @@ import java.util.*;
 public class PacketType {
     public static class Login{
         public static class Client extends PacketNameTemplate{
+            public static final HashMap<Integer,PacketInfo> Packets=new HashMap<>();
             public static final PacketInfo Set_Compression=new PacketInfo(0x03,"Set_Compression",PacketFieldType.VARINT);
             public static final PacketInfo Login_Success=new PacketInfo(0x02,"Login_Success",PacketFieldType.UUID,PacketFieldType.STRING);
             public static final PacketInfo Disconnect=new PacketInfo(0x00,"Disconnect(Login)",PacketFieldType.CHAT);
@@ -19,12 +20,14 @@ public class PacketType {
     }
     public static class Status{
         public static class Client extends PacketNameTemplate{
+            public static final HashMap<Integer,PacketInfo> Packets=new HashMap<>();
             public static final PacketInfo Response = new PacketInfo(0x00, "Response", PacketFieldType.STRING);
             public static final PacketInfo Pong = new PacketInfo(0x01, "Pong", PacketFieldType.LONG);
         }
     }
     public static class Play{
         public static class Client extends PacketNameTemplate{
+            public static final HashMap<Integer,PacketInfo> Packets=new HashMap<>();
             public static final PacketInfo JOIN_GAME=new PacketInfo(0x26,"JOIN_GAME",
                     PacketFieldBuilder.makeBlock().
                             add(PacketFieldType.INT).
@@ -44,6 +47,12 @@ public class PacketType {
                             add(PacketFieldType.BOOLEAN).
                             add(PacketFieldType.BOOLEAN).
                             add(PacketFieldType.BOOLEAN).build());
+            public static final PacketInfo PLUGIN_MESSAGE=new PacketInfo(0x18,"PLUGIN_MESSAGE",PacketFieldBuilder.makeBlock().add(
+                    PacketFieldType.IDENTIFIER,a->{},b->{
+                        int len=(b.isName_nulled()?b.getThing():b.toString()).length();
+                        Data.setSize(Data.packet_max-len-Util.getVarLength(len));
+                    }
+            ).add(PacketFieldType.ARRAY_OF_BYTE).build());
         }
     }
     static{
@@ -53,6 +62,7 @@ public class PacketType {
         registerPacketInfo(Status.Client.Response,Status.Client.Packets);
         registerPacketInfo(Status.Client.Pong,Status.Client.Packets);
         registerPacketInfo(Play.Client.JOIN_GAME,Play.Client.Packets);
+        registerPacketInfo(Play.Client.PLUGIN_MESSAGE,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();
@@ -109,5 +119,4 @@ public class PacketType {
     }
 }
 abstract class PacketNameTemplate{
-    public static final HashMap<Integer,PacketInfo> Packets=new HashMap<>();
 }

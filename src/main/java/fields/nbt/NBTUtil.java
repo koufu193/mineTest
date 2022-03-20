@@ -6,6 +6,7 @@ import sun.misc.Unsafe;
 import javax.print.attribute.standard.JobName;
 import javax.script.ScriptEngine;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -32,9 +33,9 @@ public class NBTUtil {
     public static NBT readFloat(DataInputStream input) throws IOException{
         return new NBT(getName(input),input.readFloat(),5);
     }
-    private static NBT readCompound(DataInputStream input) throws IOException{
+    private static NBT readCompound(DataInputStream input,int len) throws IOException{
         NBT nbt=new NBT("",10);
-        return NBT.readDataFromDataInputStream(input,nbt,new NBTIndex(-1));
+        return NBT.readDataFromDataInputStream(input,nbt,new NBTIndex(-1),len);
     }
     public static NBT readList(DataInputStream input,String name) throws IOException{
         NBT list=new NBT(name==null?getName(input):name,9);
@@ -46,7 +47,7 @@ public class NBTUtil {
         }
         if(0<size) {
             for (int i = 0; i < size; i++) {
-                NBT nbt=(TypeID!=10?readNBT(TypeID, input,false):readCompound(input));
+                NBT nbt=(TypeID!=10?readNBT(TypeID, input,false):readCompound(input,0));
                 if(nbt==null){
                     System.out.println("nbt is null");
                 }else {
@@ -155,7 +156,7 @@ public class NBTUtil {
             }
             return list;
         }else if(TypeID==10) {
-            return NBT.readDataFromDataInputStream(input, new NBT(name, 10),new NBTIndex(-1));
+            return readCompound(input,1);
         }else if(TypeID==9){
             return readList(input,name);
         }else{
@@ -164,7 +165,7 @@ public class NBTUtil {
         }
     }
     public static String getName(DataInputStream input) throws IOException {
-        int s=input.readShort();
+        int s = input.readShort();
         return new String(input.readNBytes(s));
     }
 }

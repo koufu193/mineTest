@@ -5,6 +5,7 @@ import fields.nbt.NBTUtil;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -166,7 +167,7 @@ public class NBT implements Cloneable{
         if (value != null) {
             return kuu+name+":"+value;
         }
-        StringBuilder builder = new StringBuilder(kuu+"NBT:" + (name.isBlank() ? "None" : name) + "{\n");
+        StringBuilder builder = new StringBuilder(kuu+"NBT:" + (name.isBlank() ? "None" : name)+" "+type + "{\n");
         for (NBT nbt : data) {
             builder.append(kuu).append(" ").append(nbt.toString(num + 1)).append("\n");
         }
@@ -174,10 +175,11 @@ public class NBT implements Cloneable{
         return builder.toString();
     }
     public static NBT readDataFromDataInputStream(DataInputStream input) throws IOException{
-        return readDataFromDataInputStream(input,new NBT("",10),new NBTIndex(-1));
+        return readDataFromDataInputStream(input,new NBT("",10),new NBTIndex(-1),1);
     }
-    public static NBT readDataFromDataInputStream(DataInputStream input,NBT compound_nbt,NBTIndex index) throws IOException {
+    public static NBT readDataFromDataInputStream(DataInputStream input,NBT compound_nbt,NBTIndex index,int finish_len) throws IOException {
         int data;
+        int now_len = 1;
         while (true) {
             data = input.readByte();
             if (data == 10) {
@@ -185,6 +187,7 @@ public class NBT implements Cloneable{
                 putData(compound_nbt, nbt1, index);
                 index.setLastIndex(getLen(index.getLength(), compound_nbt, index) - 1);
                 index.next(-1);
+                now_len++;
             } else if (data == 3) {
                 putData(compound_nbt, NBTUtil.readInt(input), index);
             } else if (data == 6) {
@@ -198,22 +201,23 @@ public class NBT implements Cloneable{
             } else if (data == 5) {
                 putData(compound_nbt, NBTUtil.readFloat(input), index);
             } else if (data == 9) {
-                putData(compound_nbt, NBTUtil.readList(input,null), index);
+                putData(compound_nbt, NBTUtil.readList(input, null), index);
             } else if (data == 8) {
-                 putData(compound_nbt, NBTUtil.readString(input), index);
+                putData(compound_nbt, NBTUtil.readString(input), index);
             } else if (data == 0) {
                 index.back();
-                if(index.getLength()<2){
+                now_len--;
+                if (now_len <= finish_len) {
                     return compound_nbt;
-                }else{
+                } else {
                     index.setLastIndex(-1);
                 }
             } else if (data == 11) {
                 putData(compound_nbt, NBTUtil.readIntList(input), index);
             } else if (data == 12) {
                 putData(compound_nbt, NBTUtil.readLongList(input), index);
-            }else if(data==7){
-                putData(compound_nbt,NBTUtil.readByteList(input), index);
+            } else if (data == 7) {
+                putData(compound_nbt, NBTUtil.readByteList(input), index);
             } else {
                 System.out.println("What is " + data);
                 return compound_nbt;
@@ -226,22 +230,16 @@ public class NBT implements Cloneable{
         }
         return nbt.data.size();
     }
-    private static void putData(NBT nbt, NBT nbt1, NBTIndex count){
-        try {
-            for (int i = 1; i <= count.getLength(); i++) {
-                int n = count.getNum(i);
-                if (n < 0) {
-                    break;
-                } else {
-                    nbt = nbt.data.get(n);
-                }
+    private static void putData(NBT nbt, NBT nbt1, NBTIndex count) {
+        for (int i = 1; i <= count.getLength(); i++) {
+            int n = count.getNum(i);
+            if (n < 0) {
+                break;
+            } else {
+                nbt = nbt.data.get(n);
             }
-            nbt.data.add(nbt1);
-        }catch (Exception e){
-            System.out.println(nbt);
-            System.out.println(count);
-            throw e;
         }
+        nbt.data.add(nbt1);
     }
 
     @Override

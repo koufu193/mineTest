@@ -191,7 +191,8 @@ public class PacketFieldType<K>{
             return 1;
         }
     });
-    private IOFunction<K> ioFunction;
+    public static final PacketFieldType<Array<Byte>> ARRAY_OF_BYTE=Array.getPacketFieldType(BYTE);
+    private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;
     public final int min;

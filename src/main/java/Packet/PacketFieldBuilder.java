@@ -28,7 +28,7 @@ public class PacketFieldBuilder {
         return list.size();
     }
 
-    public PacketFieldType[] build() {
+    public PacketFieldType<?>[] build() {
         return list.stream().map(b -> new PacketFieldType(b.getField().name, b.getField().min, b.getField().max, new GroupDataFunction(b)
         )).toArray(PacketFieldType[]::new);
     }
