@@ -1,16 +1,14 @@
 import Packet.PacketData;
 import Packet.PacketType;
 import game.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.Util;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class PacketSender {
     private DataInputStream input;
@@ -20,6 +18,7 @@ public class PacketSender {
     private int port;
     public int compressed_chunk_size=-10;
     Logger logger;
+
     public PacketType.PacketState state= PacketType.PacketState.Login;
     public PacketSender(String host,int port) throws IOException {
         this.host=host;
@@ -27,7 +26,7 @@ public class PacketSender {
         socket=new Socket(host,port);
         input=new DataInputStream(socket.getInputStream());
         output=new DataOutputStream(socket.getOutputStream());
-        logger=Logger.getLogger(getClass().getName());
+        logger= LoggerFactory.getLogger(getClass());
     }
     public void disconnect() throws IOException {
         checkSocket();
