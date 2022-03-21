@@ -1,5 +1,5 @@
 import Packet.*;
-import fields.NBT;
+import game.PacketSender;
 import game.User;
 import info.ClientInfo;
 import util.Util;
@@ -16,12 +16,25 @@ public class Main {
             user=sender.sendLoginPacket("example");
             System.out.println("name:"+user.getName()+",UUID:"+user.getUUID());
             PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state, sender.compressed_chunk_size);//Join Game
-            System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size));
             PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size);
+            PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size);
+            System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size));
+            System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size));
             Util.sendPacket(0x0a,Util.getData(b->{
                 Util.writeString("minecraft:brand",StandardCharsets.UTF_8,b);
                 Util.writeString(ClientInfo.getClientName(),StandardCharsets.UTF_8,b);
             }),sender.getOutput(),sender.compressed_chunk_size);
+            Util.sendPacket(0x05,Util.getData(b->{
+                Util.writeString(user.getLocate(),StandardCharsets.UTF_8,b);
+                b.writeByte(user.getView_distance());
+                Util.writeVarInt(user.getChat_mode(),b);
+                b.writeBoolean(user.isChat_color());
+                b.writeByte(user.getDisplayed_skin_parts());
+                Util.writeVarInt(user.getMain_hand(),b);
+                b.writeBoolean(user.isEnable_text_filtering());
+                b.writeBoolean(user.isAllow_server_listing());
+            }),sender);
+            System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
             Util.sendPacket(0x03, Util.getData(b ->Util.writeString("aaaaa", StandardCharsets.UTF_8, b)), sender.getOutput(), sender.compressed_chunk_size);
             while (true) {
                 Thread.sleep(1000);

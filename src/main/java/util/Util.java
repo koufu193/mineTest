@@ -1,6 +1,7 @@
 package util;
 
 import Packet.PacketValue;
+import game.PacketSender;
 import org.xerial.snappy.Snappy;
 
 import java.io.ByteArrayOutputStream;
@@ -147,5 +148,8 @@ public class Util {
             }
         });
         sendPacket(PacketID,data,output,compressed_chunk_size);
+    }
+    public static void sendPacket(int PacketID, byte[] data, PacketSender sender) throws IOException{
+        sendPacket(PacketID,data,sender.getOutput(),sender.compressed_chunk_size);
     }
 }

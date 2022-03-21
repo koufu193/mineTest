@@ -1,6 +1,7 @@
 package Packet;
 
 import fields.array.Data;
+import game.PacketSender;
 import org.xerial.snappy.Snappy;
 import org.xerial.snappy.pure.SnappyRawDecompressor;
 import util.Util;
@@ -47,6 +48,9 @@ public class PacketData {
         int PacketID=Util.readVarInt(input);
         length-=Util.getVarLength(PacketID);
         return getPacketDataFromData(length,PacketID,input,sender,state);
+    }
+    public static PacketData fromInputStream(PacketSender packetSender,PacketType.Sender sender) throws IOException{
+        return fromInputStream(packetSender.getInput(),sender,packetSender.state,packetSender.compressed_chunk_size);
     }
     public static PacketData fromInputStream(DataInputStream input, PacketType.Sender sender, PacketType.PacketState state,int compressed_chunk_size) throws IOException {
         if(compressed_chunk_size<0){

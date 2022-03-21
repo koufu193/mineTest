@@ -1,3 +1,5 @@
+package game;
+
 import Packet.PacketData;
 import Packet.PacketType;
 import game.User;

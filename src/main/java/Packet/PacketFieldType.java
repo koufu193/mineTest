@@ -4,6 +4,7 @@ import fields.Array;
 import fields.Chat;
 import fields.Identifier;
 import fields.NBT;
+import fields.array.Data;
 import util.IOFunction;
 import util.Util;
 
@@ -191,7 +192,38 @@ public class PacketFieldType<K>{
             return 1;
         }
     });
-    public static final PacketFieldType<Array<Byte>> ARRAY_OF_BYTE=Array.getPacketFieldType(BYTE);
+    public static final PacketFieldType<byte[]> ARRAY_OF_BYTE=new PacketFieldType<>("ARRAY_OF_BYTE", 0, -1, new IOFunction<>() {
+        @Override
+        public void write(byte[] value, DataOutputStream output) throws IOException {
+            output.write(value);
+        }
+
+        @Override
+        public byte[] read(DataInputStream input) throws IOException {
+            return input.readNBytes(Data.size);
+        }
+
+        @Override
+        public int getLength(byte[] value) {
+            return value.length*8;
+        }
+    });
+    public static final PacketFieldType<Float> FLOAT=new PacketFieldType<>("FLOAT", 32, 32, new IOFunction<>() {
+        @Override
+        public void write(Float value, DataOutputStream output) throws IOException {
+            output.writeFloat(value);
+        }
+
+        @Override
+        public Float read(DataInputStream input) throws IOException {
+            return input.readFloat();
+        }
+
+        @Override
+        public int getLength(Float value) {
+            return 32;
+        }
+    });
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;
