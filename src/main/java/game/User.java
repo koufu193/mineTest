@@ -71,4 +71,11 @@ public class User {
     public void setAllow_server_listing(boolean allow_server_listing) {
         this.allow_server_listing = allow_server_listing;
     }
+    public boolean equals(Object o){
+        if(this==o) return true;
+        if(o instanceof User that){
+            return that.name.equals(name)&&that.uuid.equals(uuid);
+        }
+        return false;
+    }
 }

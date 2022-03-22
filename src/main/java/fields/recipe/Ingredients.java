@@ -6,6 +6,7 @@ import util.Util;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Ingredients {
@@ -32,5 +33,12 @@ public class Ingredients {
         for(int i=0;i<ingredients.getSlots().length;i++){
             Slot.write(ingredients.getSlots()[i],output);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredients{" +
+                "slots=" + Arrays.toString(slots) +
+                '}';
     }
 }

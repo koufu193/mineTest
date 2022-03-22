@@ -1,9 +1,6 @@
 package Packet;
 
-import fields.Array;
-import fields.Chat;
-import fields.Identifier;
-import fields.NBT;
+import fields.*;
 import fields.array.Data;
 import util.IOFunction;
 import util.Util;
@@ -224,6 +221,24 @@ public class PacketFieldType<K>{
             return 32;
         }
     });
+    public static final PacketFieldType<Recipe> RECIPE=new PacketFieldType<>("RECIPE", 0, -1, new IOFunction<>() {
+        @Override
+        public void write(Recipe value, DataOutputStream output) throws IOException {
+            Recipe.writeRecipe(value,output);
+        }
+
+        @Override
+        public Recipe read(DataInputStream input) throws IOException {
+            return Recipe.readRecipe(input);
+
+        }
+
+        @Override
+        public int getLength(Recipe value) {
+            return 0;
+        }
+    });
+    public static final PacketFieldType<Array<Recipe>> ARRAY_OF_RECIPE=Array.getPacketFieldType(RECIPE);
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;

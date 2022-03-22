@@ -11,11 +11,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.zip.Deflater;
 
 public class Util {
     public static int readVarInt(DataInputStream input) throws IOException {
+        Objects.requireNonNull(input);
         int value = 0;
         int length = 0;
         byte currentByte;
@@ -35,6 +37,7 @@ public class Util {
         return value;
     }
     public static long readVarLong(DataInputStream input) throws IOException {
+        Objects.requireNonNull(input);
         long value = 0;
         int length = 0;
         byte currentByte;
@@ -55,6 +58,7 @@ public class Util {
         return value;
     }
     public static void writeVarInt(int value,DataOutputStream output) throws IOException {
+        Objects.requireNonNull(output);
         while (true) {
             if ((value & ~0x7F) == 0) {
                 output.writeByte(value);
@@ -66,6 +70,7 @@ public class Util {
         }
     }
     public static void writeVarLong(long value, DataOutputStream output) throws IOException{
+        Objects.requireNonNull(output);
         while (true) {
             if ((value & ~0x7F) == 0) {
                 output.writeLong(value);
@@ -88,25 +93,34 @@ public class Util {
         }
     }
     public static void writeString(String string, Charset charset,DataOutputStream output) throws IOException {
+        Objects.requireNonNull(string);
+        Objects.requireNonNull(charset);
+        Objects.requireNonNull(output);
         byte [] bytes = string.getBytes(charset);
         writeVarInt(bytes.length,output);
         output.write(bytes);
     }
     public static String readString(DataInputStream input) throws IOException{
+        Objects.requireNonNull(input);
         return new String(input.readNBytes(Util.readVarInt(input)));
     }
     public static byte[] getData(Custom<DataOutputStream> func) throws IOException {
+        Objects.requireNonNull(func);
         ByteArrayOutputStream buffer=new ByteArrayOutputStream();
         DataOutputStream output=new DataOutputStream(buffer);
         func.accept(output);
         return buffer.toByteArray();
     }
     public static void sendPacket(int PacketID,byte[] data,DataOutputStream output) throws IOException{
+        Objects.requireNonNull(data);
+        Objects.requireNonNull(output);
         writeVarInt(getVarLength(PacketID)+data.length,output);
         writeVarInt(PacketID,output);
         output.write(data);
     }
     public static void sendPacket(int PacketID,byte[] data,DataOutputStream output,int Compressed_chunk_size) throws IOException {
+        Objects.requireNonNull(data);
+        Objects.requireNonNull(output);
         if (Compressed_chunk_size < 0) {
             sendPacket(PacketID, data, output);
             return;
@@ -131,6 +145,7 @@ public class Util {
         if(value.contains(null)){
             throw new IllegalArgumentException("List<PakcetValue>にnullが入っています");
         }
+        Objects.requireNonNull(output);
         byte[] data=getData(b->{
             for(PacketValue packetValue:value){
                 packetValue.TYPE.write(packetValue.value,b);
@@ -142,6 +157,7 @@ public class Util {
         if(value.contains(null)){
             throw new IllegalArgumentException("List<PakcetValue>にnullが入っています");
         }
+        Objects.requireNonNull(output);
         byte[] data=getData(b->{
             for(PacketValue packetValue:value){
                 packetValue.TYPE.write(packetValue.value,b);
@@ -150,6 +166,8 @@ public class Util {
         sendPacket(PacketID,data,output,compressed_chunk_size);
     }
     public static void sendPacket(int PacketID, byte[] data, PacketSender sender) throws IOException{
+        Objects.requireNonNull(data);
+        Objects.requireNonNull(sender);
         sendPacket(PacketID,data,sender.getOutput(),sender.compressed_chunk_size);
     }
 }

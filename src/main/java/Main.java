@@ -34,7 +34,8 @@ public class Main {
                 b.writeBoolean(user.isEnable_text_filtering());
                 b.writeBoolean(user.isAllow_server_listing());
             }),sender);
-            System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
+            PacketData.fromInputStream(sender, PacketType.Sender.Client);
+            PacketData.fromInputStream(sender, PacketType.Sender.Client);//Declare Recipes
             Util.sendPacket(0x03, Util.getData(b ->Util.writeString("aaaaa", StandardCharsets.UTF_8, b)), sender.getOutput(), sender.compressed_chunk_size);
             while (true) {
                 Thread.sleep(1000);

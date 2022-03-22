@@ -54,4 +54,28 @@ public class Slot {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(o instanceof Slot slot) {
+            return Present == slot.Present && Item_ID == slot.Item_ID && Item_Count == slot.Item_Count && Objects.equals(nbt, slot.nbt);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Slot{" +
+                "Present=" + Present +
+                ", Item_ID=" + Item_ID +
+                ", Item_Count=" + Item_Count +
+                ", nbt=" + nbt +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Present, Item_ID, Item_Count, nbt);
+    }
 }

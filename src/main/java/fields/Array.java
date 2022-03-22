@@ -30,7 +30,7 @@ public class Array<T>{
         }
     }
     public static <K> Array<K> read(DataInputStream input, IOFunction<K> func,int size) throws IOException {
-        List<K> list= new ArrayList<>(size);
+        List<K> list=new ArrayList<>(size);
         for(int i=0;i<size;i++){
             list.add(func.read(input));
         }

@@ -56,6 +56,9 @@ public class PacketType {
             public static final PacketInfo SERVER_DIFFICULTY=new PacketInfo(0x0e,"SERVER_DIFFICULTY",PacketFieldType.UNSIGNEDBYTE,PacketFieldType.BOOLEAN);
             public static final PacketInfo PLAYER_ABILITIES=new PacketInfo(0x32,"PLAYER_ABILITIES",PacketFieldType.BYTE,PacketFieldType.FLOAT,PacketFieldType.FLOAT);
             public static final PacketInfo HELD_ITEM_CHANGE=new PacketInfo(0x48,"HELD_ITEM_CHANGE",PacketFieldType.BYTE);
+            public static final PacketInfo DECLARE_RECIPES=new PacketInfo(0x66,"DECLARE_RECIPES",PacketFieldBuilder.makeBlock().add(
+                    PacketFieldType.VARINT,a->{}, Data::setSize
+            ).add(PacketFieldType.ARRAY_OF_RECIPE).build());
         }
     }
     static{
@@ -69,6 +72,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.PLAYER_ABILITIES,Play.Client.Packets);
         registerPacketInfo(Play.Client.SERVER_DIFFICULTY,Play.Client.Packets);
         registerPacketInfo(Play.Client.HELD_ITEM_CHANGE,Play.Client.Packets);
+        registerPacketInfo(Play.Client.DECLARE_RECIPES,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();

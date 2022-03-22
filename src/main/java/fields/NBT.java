@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class NBT implements Cloneable{
     public String name;
@@ -252,5 +253,36 @@ public class NBT implements Cloneable{
         }
         result.data=list;
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(o instanceof NBT nbt) {
+            boolean is=true;
+            if(data==null||nbt.data==null){
+                if(data!=nbt.data){
+                    is=false;
+                }
+            }else {
+                if (data.size() == nbt.data.size()) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (!data.get(i).equals(nbt.data.get(i))) {
+                            is = false;
+                            break;
+                        }
+                    }
+                } else {
+                    is = false;
+                }
+            }
+            return type == nbt.type && (type!=9||list_type == nbt.list_type) && Objects.equals(name, nbt.name) && is && Objects.equals(value, nbt.value);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, data, value, type, list_type);
     }
 }
