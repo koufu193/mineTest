@@ -1,5 +1,6 @@
 package Packet;
 
+import fields.Array;
 import fields.array.Data;
 import util.IOFunction;
 import util.Util;
@@ -59,6 +60,7 @@ public class PacketType {
             public static final PacketInfo DECLARE_RECIPES=new PacketInfo(0x66,"DECLARE_RECIPES",PacketFieldBuilder.makeBlock().add(
                     PacketFieldType.VARINT,a->{}, Data::setSize
             ).add(PacketFieldType.ARRAY_OF_RECIPE).build());
+            public static final PacketInfo TAGS=new PacketInfo(0x67,"TAGS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(Array.getPacketFieldType(PacketFieldType.TAGS)).build());
         }
     }
     static{
@@ -73,6 +75,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.SERVER_DIFFICULTY,Play.Client.Packets);
         registerPacketInfo(Play.Client.HELD_ITEM_CHANGE,Play.Client.Packets);
         registerPacketInfo(Play.Client.DECLARE_RECIPES,Play.Client.Packets);
+        registerPacketInfo(Play.Client.TAGS,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();

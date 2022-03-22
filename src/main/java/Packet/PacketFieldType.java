@@ -2,6 +2,7 @@ package Packet;
 
 import fields.*;
 import fields.array.Data;
+import fields.tag.Tags;
 import util.IOFunction;
 import util.Util;
 
@@ -239,6 +240,36 @@ public class PacketFieldType<K>{
         }
     });
     public static final PacketFieldType<Array<Recipe>> ARRAY_OF_RECIPE=Array.getPacketFieldType(RECIPE);
+    public static final PacketFieldType<Tag> TAG=new PacketFieldType<>("TAG", 0, -1, new IOFunction<Tag>() {
+        @Override
+        public void write(Tag value, DataOutputStream output) throws IOException {
+            Tag.write(value,output);
+        }
+        @Override
+        public Tag read(DataInputStream input) throws IOException {
+            return Tag.read(input);
+        }
+        @Override
+        public int getLength(Tag value) {
+            return 0;
+        }
+    });
+    public static final PacketFieldType<Tags> TAGS=new PacketFieldType<>("TAGS", 0, -1, new IOFunction<Tags>() {
+        @Override
+        public void write(Tags value, DataOutputStream output) throws IOException {
+            Tags.write(value,output);
+        }
+
+        @Override
+        public Tags read(DataInputStream input) throws IOException {
+            return Tags.read(input);
+        }
+
+        @Override
+        public int getLength(Tags value) {
+            return 0;
+        }
+    });
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;

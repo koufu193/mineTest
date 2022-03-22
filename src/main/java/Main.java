@@ -36,6 +36,7 @@ public class Main {
             }),sender);
             PacketData.fromInputStream(sender, PacketType.Sender.Client);
             PacketData.fromInputStream(sender, PacketType.Sender.Client);//Declare Recipes
+            PacketData.fromInputStream(sender, PacketType.Sender.Client);//Tags
             Util.sendPacket(0x03, Util.getData(b ->Util.writeString("aaaaa", StandardCharsets.UTF_8, b)), sender.getOutput(), sender.compressed_chunk_size);
             while (true) {
                 Thread.sleep(1000);
