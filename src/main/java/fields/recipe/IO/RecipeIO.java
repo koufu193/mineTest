@@ -5,6 +5,7 @@ import fields.Slot;
 import fields.recipe.AbstractRecipe;
 import fields.recipe.Ingredients;
 import fields.recipe.Recipes;
+import org.jetbrains.annotations.NotNull;
 import util.Util;
 
 import java.io.DataInputStream;
@@ -55,7 +56,7 @@ public class RecipeIO {
     }
     public static class Crafting_ShapelessIO extends AbstractRecipeIO<Recipes.Crafting_Shapeless>{
         @Override
-        public Recipes.Crafting_Shapeless read(DataInputStream input) throws IOException {
+        public Recipes.Crafting_Shapeless read(@NotNull DataInputStream input) throws IOException {
             String group=Util.readString(input);
             int len=Util.readVarInt(input);
             Ingredients[] ingredients=new Ingredients[len];
@@ -81,7 +82,7 @@ public class RecipeIO {
     }
     public static class Crafting_ShapedIO extends AbstractRecipeIO<Recipes.Crafting_Shaped>{
         @Override
-        public Recipes.Crafting_Shaped read(DataInputStream input) throws IOException {
+        public Recipes.Crafting_Shaped read(@NotNull DataInputStream input) throws IOException {
             int width=Util.readVarInt(input);
             int height=Util.readVarInt(input);
             String group=Util.readString(input);
@@ -111,7 +112,7 @@ public class RecipeIO {
             super(type);
         }
         @Override
-        public Recipes.Cookable_Item read(DataInputStream input) throws IOException {
+        public Recipes.Cookable_Item read(@NotNull DataInputStream input) throws IOException {
             return new Recipes.Cookable_Item(Util.readString(input),Ingredients.read(input),Slot.read(input),input.readFloat(),Util.readVarInt(input));
         }
         @Override
@@ -129,7 +130,7 @@ public class RecipeIO {
     }
     public static class StonecuttingIO extends AbstractRecipeIO<Recipes.Stonecutting>{
         @Override
-        public Recipes.Stonecutting read(DataInputStream input) throws IOException {
+        public Recipes.Stonecutting read(@NotNull DataInputStream input) throws IOException {
             return new Recipes.Stonecutting(Util.readString(input),Ingredients.read(input),Slot.read(input));
         }
         @Override
@@ -145,7 +146,7 @@ public class RecipeIO {
     }
     public static class SmithingIO extends AbstractRecipeIO<Recipes.Smithing>{
         @Override
-        public Recipes.Smithing read(DataInputStream input) throws IOException {
+        public Recipes.Smithing read(@NotNull DataInputStream input) throws IOException {
             return new Recipes.Smithing(Ingredients.read(input),Ingredients.read(input),Slot.read(input));
         }
         @Override

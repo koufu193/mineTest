@@ -3,6 +3,7 @@ package game;
 import Packet.PacketData;
 import Packet.PacketType;
 import game.User;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Util;
@@ -22,7 +23,7 @@ public class PacketSender {
     Logger logger;
 
     public PacketType.PacketState state= PacketType.PacketState.Login;
-    public PacketSender(String host,int port) throws IOException {
+    public PacketSender(@NotNull String host, int port) throws IOException {
         this.host=host;
         this.port=port;
         socket=new Socket(host,port);
@@ -34,7 +35,7 @@ public class PacketSender {
         checkSocket();
         socket.close();
     }
-    public User sendLoginPacket(String player_name) throws IOException{
+    public User sendLoginPacket(@NotNull String player_name) throws IOException{
         sendLoginHandshake();
         Util.sendPacket(0x00,Util.getData(b->Util.writeString(player_name,StandardCharsets.UTF_8,b)),output);
         PacketData data=PacketData.fromInputStream(input, PacketType.Sender.Client,state,compressed_chunk_size);
@@ -63,7 +64,7 @@ public class PacketSender {
         state=PacketType.PacketState.Login;
         logger.info("sent LoginHandshake");
     }
-    public void sendPacket(PacketData packet) throws IOException{
+    public void sendPacket(@NotNull PacketData packet) throws IOException{
         checkSocket();
         if(compressed_chunk_size<0) {
             Util.sendPacket(packet.getPacketID(), packet.getData(), output);

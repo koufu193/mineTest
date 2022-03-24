@@ -280,7 +280,6 @@ public class NBT implements Cloneable{
         }
         return false;
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, data, value, type, list_type);

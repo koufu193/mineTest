@@ -1,5 +1,6 @@
 package fields;
 
+import org.jetbrains.annotations.NotNull;
 import util.Util;
 
 import java.io.DataInputStream;
@@ -12,9 +13,7 @@ import java.util.Objects;
 public class Tag {
     Identifier tag_name;
     int[] entries;
-    public Tag(Identifier tag_name,int[] entries){
-        Objects.requireNonNull(tag_name);
-        Objects.requireNonNull(entries);
+    public Tag(@NotNull Identifier tag_name,@NotNull int[] entries){
         this.tag_name=tag_name;
         this.entries=entries;
     }
@@ -24,10 +23,10 @@ public class Tag {
     public int[] getEntries() {
         return entries;
     }
-    public Tag(Identifier tag_name){
+    public Tag(@NotNull Identifier tag_name){
         this(tag_name,new int[0]);
     }
-    public static void write(Tag tag, DataOutputStream output) throws IOException {
+    public static void write(@NotNull Tag tag, @NotNull DataOutputStream output) throws IOException {
         Objects.requireNonNull(tag);
         Objects.requireNonNull(output);
         Util.writeString(tag.getTag_name().toString(), StandardCharsets.UTF_8,output);
@@ -36,8 +35,7 @@ public class Tag {
             Util.writeVarInt(entry,output);
         }
     }
-    public static Tag read(DataInputStream input) throws IOException{
-        Objects.requireNonNull(input);
+    public static Tag read(@NotNull DataInputStream input) throws IOException{
         Identifier tag_name=Identifier.getInstance(input);
         int[] entries=new int[Util.readVarInt(input)];
         for(int i=0;i<entries.length;i++){

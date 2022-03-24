@@ -1,5 +1,6 @@
 package fields;
 
+import org.jetbrains.annotations.NotNull;
 import util.Util;
 
 import java.io.DataInputStream;
@@ -12,7 +13,7 @@ public class Identifier {
     String namespace;
     String thing;
     boolean name_nulled=false;
-    public Identifier(String namespace,String thing){
+    public Identifier(String namespace,@NotNull String thing){
         if(namespace!=null) {
             this.namespace = namespace;
         }else{
@@ -38,7 +39,7 @@ public class Identifier {
     public String toString() {
         return namespace+":"+ thing;
     }
-    public static Identifier getInstance(DataInputStream input) throws IOException {
+    public static Identifier getInstance(@NotNull DataInputStream input) throws IOException {
         int s=Util.readVarInt(input);
         String str=new String(input.readNBytes(s));
         if(str.contains(":")){

@@ -2,6 +2,7 @@ package fields;
 
 import fields.recipe.AbstractRecipe;
 import fields.recipe.IO.RecipeIO;
+import org.jetbrains.annotations.NotNull;
 import util.Util;
 
 import java.io.DataInputStream;
@@ -15,11 +16,11 @@ public class Recipe {
     Identifier Recipe_ID;
     AbstractRecipe data;
 
-    public static Recipe readRecipe(DataInputStream input) throws IOException {
+    public static Recipe readRecipe(@NotNull DataInputStream input) throws IOException {
         Identifier RecipeType=Identifier.getInstance(input);
         return new Recipe(RecipeType,Identifier.getInstance(input), RecipeIO.getRecipe(RecipeType,input));
     }
-    public Recipe(Identifier Type,Identifier Recipe_ID,AbstractRecipe data){
+    public Recipe(@NotNull Identifier Type,@NotNull Identifier Recipe_ID,AbstractRecipe data){
         this.Type=Type;
         this.Recipe_ID=Recipe_ID;
         this.data=data;
@@ -33,9 +34,7 @@ public class Recipe {
     public Identifier getType() {
         return Type;
     }
-    public static void writeRecipe(Recipe recipe,DataOutputStream output) throws IOException{
-        Objects.requireNonNull(recipe,"recipeがnullです");
-        Objects.requireNonNull(output,"outputがnullです");
+    public static void writeRecipe(@NotNull Recipe recipe,@NotNull DataOutputStream output) throws IOException{
         Util.writeString(recipe.getType().toString(), StandardCharsets.UTF_8,output);
         Util.writeString(recipe.getRecipe_ID().toString(),StandardCharsets.UTF_8,output);
         RecipeIO.writeRecipe(recipe.getData(),recipe.getType(),output);

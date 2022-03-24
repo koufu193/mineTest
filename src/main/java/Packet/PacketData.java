@@ -2,6 +2,7 @@ package Packet;
 
 import fields.array.Data;
 import game.PacketSender;
+import org.jetbrains.annotations.NotNull;
 import org.xerial.snappy.Snappy;
 import org.xerial.snappy.pure.SnappyRawDecompressor;
 import util.Util;
@@ -17,10 +18,7 @@ public class PacketData {
     int PacketID;
     public List<PacketValue> data=new ArrayList<>();
     static Inflater inflater=new Inflater();
-    public PacketData(PacketInfo info){
-        if(info==null){
-            throw new IllegalArgumentException("引数のinfoがnullです");
-        }
+    public PacketData(@NotNull PacketInfo info){
         this.PacketID=info.PacketID;
         for(int i=0;i<info.types.length;i++){
             data.add(new PacketValue(info.types[i],null));
@@ -42,17 +40,17 @@ public class PacketData {
                 '}';
     }
 
-    public static PacketData fromInputStream(DataInputStream input, PacketType.Sender sender, PacketType.PacketState state) throws IOException {
+    public static PacketData fromInputStream(@NotNull DataInputStream input,@NotNull PacketType.Sender sender,@NotNull PacketType.PacketState state) throws IOException {
         //DataInputStreamからパケットに変換処理
         int length=Util.readVarInt(input);
         int PacketID=Util.readVarInt(input);
         length-=Util.getVarLength(PacketID);
         return getPacketDataFromData(length,PacketID,input,sender,state);
     }
-    public static PacketData fromInputStream(PacketSender packetSender,PacketType.Sender sender) throws IOException{
+    public static PacketData fromInputStream(@NotNull PacketSender packetSender,@NotNull PacketType.Sender sender) throws IOException{
         return fromInputStream(packetSender.getInput(),sender,packetSender.state,packetSender.compressed_chunk_size);
     }
-    public static PacketData fromInputStream(DataInputStream input, PacketType.Sender sender, PacketType.PacketState state,int compressed_chunk_size) throws IOException {
+    public static PacketData fromInputStream(@NotNull DataInputStream input,@NotNull PacketType.Sender sender,@NotNull PacketType.PacketState state, int compressed_chunk_size) throws IOException {
         if(compressed_chunk_size<0){
             return fromInputStream(input,sender,state);
         }
@@ -87,7 +85,7 @@ public class PacketData {
         }
         return data;
     }
-    private static PacketData getPacketDataFromData(int size,int PacketID,DataInputStream input, PacketType.Sender sender, PacketType.PacketState state) throws IOException{
+    private static PacketData getPacketDataFromData(int size,int PacketID,@NotNull DataInputStream input,@NotNull PacketType.Sender sender,@NotNull PacketType.PacketState state) throws IOException{
         PacketInfo info=PacketType.getPacketDatFromPacketStatus(state,sender).get(PacketID);
         Data.setPacket_max(size);
         if(info!=null) {

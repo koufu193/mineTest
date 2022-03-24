@@ -2,6 +2,7 @@ package Packet;
 
 import fields.Array;
 import fields.array.Data;
+import org.jetbrains.annotations.NotNull;
 import util.IOFunction;
 import util.Util;
 
@@ -61,6 +62,8 @@ public class PacketType {
                     PacketFieldType.VARINT,a->{}, Data::setSize
             ).add(PacketFieldType.ARRAY_OF_RECIPE).build());
             public static final PacketInfo TAGS=new PacketInfo(0x67,"TAGS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(Array.getPacketFieldType(PacketFieldType.TAGS)).build());
+            public static final PacketInfo ENTITY_STATUS=new PacketInfo(0x1b,"ENTITY_STATUS",PacketFieldType.INT,PacketFieldType.BYTE);
+            public static final PacketInfo DECLARE_COMMANDS=new PacketInfo(0x12,"DECLARE_COMMANDS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(PacketFieldType.ARRAY_OF_NODE).add(PacketFieldType.VARINT).build());
         }
     }
     static{
@@ -76,6 +79,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.HELD_ITEM_CHANGE,Play.Client.Packets);
         registerPacketInfo(Play.Client.DECLARE_RECIPES,Play.Client.Packets);
         registerPacketInfo(Play.Client.TAGS,Play.Client.Packets);
+        registerPacketInfo(Play.Client.ENTITY_STATUS,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();
@@ -83,11 +87,11 @@ public class PacketType {
         result.add(Status.Client.Packets);
         return result;
     }
-    private static PacketInfo registerPacketInfo(PacketInfo info,HashMap<Integer,PacketInfo> packetMap){
+    private static PacketInfo registerPacketInfo(@NotNull PacketInfo info,@NotNull HashMap<Integer,PacketInfo> packetMap){
         packetMap.put(info.PacketID,info);
         return info;
     }
-    public static HashMap<Integer,PacketInfo> getPacketDatFromPacketStatus(PacketState status,Sender sender){
+    public static HashMap<Integer,PacketInfo> getPacketDatFromPacketStatus(@NotNull PacketState status,@NotNull Sender sender){
         switch (status){
             case Play:
                 return (sender==Sender.Client)?Play.Client.Packets:null;
@@ -98,7 +102,7 @@ public class PacketType {
         }
         return null;
     }
-    public static List<PacketInfo> getPacketsFromID(int PacketID,Sender sender){
+    public static List<PacketInfo> getPacketsFromID(int PacketID,@NotNull Sender sender){
         List<PacketInfo> result=new ArrayList<>();
         if(sender==Sender.Client){
             for(HashMap<Integer,PacketInfo> map:getClientPackets()){
@@ -121,7 +125,7 @@ public class PacketType {
         }
         return null;
     }
-    public static PacketInfo getPacketFromID(int PacketID,HashMap<Integer,PacketInfo> packetMap){
+    public static PacketInfo getPacketFromID(int PacketID,@NotNull HashMap<Integer,PacketInfo> packetMap){
         return packetMap.get(PacketID);
     }
     public enum Sender{

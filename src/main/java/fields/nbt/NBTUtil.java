@@ -1,6 +1,7 @@
 package fields.nbt;
 
 import fields.NBT;
+import org.jetbrains.annotations.NotNull;
 import sun.misc.Unsafe;
 
 import javax.print.attribute.standard.JobName;
@@ -12,32 +13,32 @@ import java.util.List;
 import java.util.Locale;
 
 public class NBTUtil {
-    public static NBT readLong(DataInputStream input) throws IOException{
+    public static NBT readLong(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),input.readLong(),4);
     }
-    public static NBT readByte(DataInputStream input) throws IOException{
+    public static NBT readByte(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),(Object)input.readByte(),1);
     }
-    public static NBT readInt(DataInputStream input) throws IOException{
+    public static NBT readInt(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),(Object)input.readInt(),3);
     }
-    public static NBT readDouble(DataInputStream input) throws IOException{
+    public static NBT readDouble(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),input.readDouble(),6);
     }
-    public static NBT readString(DataInputStream input) throws IOException{
+    public static NBT readString(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),getName(input),8);
     }
-    public static NBT readShort(DataInputStream input) throws IOException{
+    public static NBT readShort(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),(Object)input.readShort(),2);
     }
-    public static NBT readFloat(DataInputStream input) throws IOException{
+    public static NBT readFloat(@NotNull DataInputStream input) throws IOException{
         return new NBT(getName(input),input.readFloat(),5);
     }
-    private static NBT readCompound(DataInputStream input,int len) throws IOException{
+    private static NBT readCompound(@NotNull DataInputStream input,int len) throws IOException{
         NBT nbt=new NBT("",10);
         return NBT.readDataFromDataInputStream(input,nbt,new NBTIndex(-1),len);
     }
-    public static NBT readList(DataInputStream input,String name) throws IOException{
+    public static NBT readList(@NotNull DataInputStream input,String name) throws IOException{
         NBT list=new NBT(name==null?getName(input):name,9);
         int TypeID=input.readByte();
         list.list_type=TypeID;
@@ -60,7 +61,7 @@ public class NBTUtil {
         }
         return list;
     }
-    public static NBT readIntList(DataInputStream input) throws IOException{
+    public static NBT readIntList(@NotNull DataInputStream input) throws IOException{
         NBT list=new NBT(getName(input),11);
         int size=input.readInt();
         if(0<=size){
@@ -72,7 +73,7 @@ public class NBTUtil {
         }
         return list;
     }
-    public static NBT readByteList(DataInputStream input) throws IOException{
+    public static NBT readByteList(@NotNull DataInputStream input) throws IOException{
         NBT list=new NBT(getName(input),7);
         int size=input.readInt();
         if(0<=size){
@@ -84,7 +85,7 @@ public class NBTUtil {
         }
         return list;
     }
-    public static NBT readLongList(DataInputStream input) throws IOException{
+    public static NBT readLongList(@NotNull DataInputStream input) throws IOException{
         NBT list=new NBT(getName(input),12);
         int size=input.readInt();
         if(0<=size){
@@ -164,7 +165,7 @@ public class NBTUtil {
             return null;
         }
     }
-    public static String getName(DataInputStream input) throws IOException {
+    public static String getName(@NotNull DataInputStream input) throws IOException {
         int s = input.readShort();
         return new String(input.readNBytes(s));
     }

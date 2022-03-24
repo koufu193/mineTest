@@ -1,9 +1,11 @@
 package Packet;
 
+import org.jetbrains.annotations.NotNull;
+
 public class PacketValue<T>{
     public final PacketFieldType<T> TYPE;
     public T value;
-    public PacketValue(PacketFieldType<T> type,T value){
+    public PacketValue(@NotNull PacketFieldType<T> type,@NotNull T value){
         if(type==null){
             throw new IllegalArgumentException("typeがnullです");
         }

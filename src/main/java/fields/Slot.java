@@ -1,5 +1,6 @@
 package fields;
 
+import org.jetbrains.annotations.NotNull;
 import util.Util;
 
 import java.io.DataInputStream;
@@ -30,7 +31,7 @@ public class Slot {
     public NBT getNbt() {
         return nbt;
     }
-    public static Slot read(DataInputStream input) throws IOException{
+    public static Slot read(@NotNull DataInputStream input) throws IOException{
         boolean present=input.readBoolean();
         if(present){
             int Item_ID=Util.readVarInt(input);
@@ -41,8 +42,7 @@ public class Slot {
             return new Slot(false,0,(byte)0,null);
         }
     }
-    public static void write(Slot slot, DataOutputStream output) throws IOException {
-        Objects.requireNonNull(slot,"slotがnullです");
+    public static void write(@NotNull Slot slot, @NotNull DataOutputStream output) throws IOException {
         output.writeBoolean(slot.isPresent());
         if(slot.isPresent()){
             Util.writeVarInt(slot.getItem_ID(),output);

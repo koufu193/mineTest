@@ -1,5 +1,6 @@
 package Packet;
 
+import org.jetbrains.annotations.NotNull;
 import util.GroupData;
 import util.GroupDataFunction;
 
@@ -14,12 +15,12 @@ public class PacketFieldBuilder {
         return new PacketFieldBuilder();
     }
 
-    public <V> PacketFieldBuilder add(PacketFieldType<V> field, Consumer<V> write, Consumer<V> read) {
+    public <V> PacketFieldBuilder add(@NotNull PacketFieldType<V> field,@NotNull Consumer<V> write,@NotNull Consumer<V> read) {
         list.add(new GroupData<>(field, write, read));
         return this;
     }
 
-    public <V> PacketFieldBuilder add(GroupData<V> groupData) {
+    public <V> PacketFieldBuilder add(@NotNull GroupData<V> groupData) {
         list.add(groupData);
         return this;
     }
@@ -32,7 +33,7 @@ public class PacketFieldBuilder {
         return list.stream().map(b -> new PacketFieldType(b.getField().name, b.getField().min, b.getField().max, new GroupDataFunction(b)
         )).toArray(PacketFieldType[]::new);
     }
-    public <V> PacketFieldBuilder add(PacketFieldType<V> field){
+    public <V> PacketFieldBuilder add(@NotNull PacketFieldType<V> field){
         return add(field,b->{},b->{});
     }
 }

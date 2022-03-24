@@ -1,5 +1,7 @@
 package game;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public class User {
@@ -13,7 +15,7 @@ public class User {
     boolean enable_text_filtering=false;
     boolean allow_server_listing=true;
     int chat_mode=0;
-    public User(UUID uuid,String name){
+    public User(@NotNull UUID uuid,@NotNull String name){
         this.uuid=uuid;
         this.name=name;
     }
@@ -59,7 +61,7 @@ public class User {
     public void setDisplayed_skin_parts(byte displayed_skin_parts) {
         this.displayed_skin_parts = displayed_skin_parts;
     }
-    public void setLocate(String locate) {
+    public void setLocate(@NotNull String locate) {
         this.locate = locate;
     }
     public void setChat_mode(int chat_mode) {

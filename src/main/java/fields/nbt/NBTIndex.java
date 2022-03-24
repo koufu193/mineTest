@@ -1,9 +1,11 @@
 package fields.nbt;
 
+import org.jetbrains.annotations.Nullable;
+
 public class NBTIndex {
     public int num;
     public NBTIndex index=null;
-    public NBTIndex(int num,NBTIndex index){
+    public NBTIndex(int num,@Nullable NBTIndex index){
         this.num=num;
         this.index=index;
     }
