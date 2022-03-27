@@ -10,10 +10,10 @@ import org.jetbrains.annotations.Nullable;
  * リテラエルノード
  */
 public class LiteralNode extends NameableNode {
-    public LiteralNode(@NotNull Flag type, @NotNull int[] children,@NotNull String name) {
+    public LiteralNode(@NotNull Flag type, int[] children,@NotNull String name) {
         super(type, children,name);
     }
-    public LiteralNode(@NotNull Flag type, @NotNull int[] children,@NotNull String name, @Nullable Integer redirect_node,boolean executable){
+    public LiteralNode(@NotNull Flag type, int[] children,@NotNull String name, @Nullable Integer redirect_node,boolean executable){
         super(type,children,name,redirect_node,executable);
     }
 }

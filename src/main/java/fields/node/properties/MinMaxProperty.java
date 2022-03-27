@@ -8,6 +8,7 @@ public abstract class MinMaxProperty<T> extends Property {
     private T min;
     private T max;
     public MinMaxProperty(@NotNull T min, @NotNull T max) {
+        super();
         this.min=min;
         this.max=max;
     }

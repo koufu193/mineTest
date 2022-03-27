@@ -3,6 +3,8 @@ package fields.node;
 import fields.Identifier;
 import fields.Node;
 import fields.node.node.nodes.LiteralNode;
+import fields.node.node.nodes.RootNode;
+import fields.node.properties.PropertyIO;
 import org.jetbrains.annotations.NotNull;
 import util.Util;
 
@@ -37,10 +39,11 @@ public class NodeUtil {
         if(type==Flag.LITERAL||type==Flag.ARGUMENT){
             name=Util.readString(input);
         }
-        Identifier parser=Identifier.getInstance(input);
-        //Propertiesの読み込み
-        *\
-        //Propertiesの読み込み終了
+        Property property=(type==Flag.ARGUMENT? PropertyIO.getProperty(input):null);
         Identifier suggestions_type=(has_suggestion_type?Identifier.getInstance(input):null);
+        switch (type){
+            case ROOT:
+                return new RootNode(type,children,redirect_code,is_executable);
+        }
     }
 }
