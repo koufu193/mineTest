@@ -17,7 +17,7 @@ public abstract class AbstractRecipeIO<T extends AbstractRecipe> {
     protected AbstractRecipeIO(@NotNull Identifier type){
         this.type=type;
     }
-    protected abstract Identifier initType();
+    protected abstract @NotNull Identifier initType();
     public abstract void write(@NotNull T recipe, @NotNull DataOutputStream output) throws IOException;
-    public Identifier getType(){return type;}
+    public @NotNull Identifier getType(){return type;}
 }

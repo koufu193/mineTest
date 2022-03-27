@@ -147,7 +147,6 @@ public class Util {
         if(value.contains(null)){
             throw new IllegalArgumentException("List<PakcetValue>にnullが入っています");
         }
-        Objects.requireNonNull(output);
         byte[] data=getData(b->{
             for(PacketValue packetValue:value){
                 packetValue.TYPE.write(packetValue.value,b);

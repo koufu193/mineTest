@@ -4,13 +4,12 @@ import fields.Identifier;
 import fields.node.Property;
 import org.jetbrains.annotations.NotNull;
 
-public class DoubleProperty extends MinMaxProperty<Double>{
-    public DoubleProperty(@NotNull Double min, @NotNull Double max) {
+public class FloatProperty extends MinMaxProperty<Float>{
+    public FloatProperty(@NotNull Float min, @NotNull Float max) {
         super(min, max);
     }
-
     @Override
     protected @NotNull Identifier initType() {
-        return new Identifier("brigadier","double");
+        return new Identifier("brigadier","float");
     }
 }

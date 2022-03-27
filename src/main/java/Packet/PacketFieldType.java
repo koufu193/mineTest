@@ -271,23 +271,6 @@ public class PacketFieldType<K>{
             return 0;
         }
     });
-    public static final PacketFieldType<Node> NODE=new PacketFieldType<>("NODE", 0, -1, new IOFunction<>() {
-        @Override
-        public void write(@NotNull Node value, @NotNull DataOutputStream output) throws IOException {
-            Node.write(value, output);
-        }
-
-        @Override
-        public Node read(@NotNull DataInputStream input) throws IOException {
-            return Node.read(input);
-        }
-
-        @Override
-        public int getLength(@NotNull Node value) {
-            return 0;
-        }
-    });
-    public static final PacketFieldType<Array<Node>> ARRAY_OF_NODE=Array.getPacketFieldType(NODE);
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;

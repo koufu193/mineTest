@@ -2,6 +2,7 @@ package fields;
 
 import fields.nbt.NBTIndex;
 import fields.nbt.NBTUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,38 +13,132 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * NBTファイルを操作するクラス
+ */
 public class NBT implements Cloneable{
-    public String name;
-    public List<NBT> data = new ArrayList<>();
-    Object value;
-    public final int type;
-    public int list_type=0;
+    private String name;
+    private List<NBT> data = new ArrayList<>();
+    private Object value=null;
+    private final int type;
+    private int list_type=0;
 
+    /**
+     * @param name 名前
+     * @param type このNBTのタイプ
+     */
     public NBT(String name,int type) {
         this.name = name;
-        value=null;
-        this.type=type;
+        value = null;
+        this.type = type;
     }
+
+    /**
+     * リストの中身の型のタイプを設定
+     * @param list_type 設定するタイプ
+     */
+    public void setList_type(int list_type) {
+        this.list_type = list_type;
+    }
+
+    /**
+     * 名前を取得する
+     * @return 名前
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * タイプを取得
+     * @return タイプ
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
+     * 中のリストを設定
+     * @param data 設定するリスト
+     */
+    public void setData(List<NBT> data) {
+        this.data = data;
+    }
+
+    /**
+     * リストを取得
+     * @return リスト
+     */
+    public List<NBT> getData() {
+        return data;
+    }
+
+    /**
+     * リストの中身の型のタイプを取得
+     * @return リストの中身の型のタイプ
+     */
+    public int getList_type() {
+        return list_type;
+    }
+
+    /**
+     * 名前を設定する
+     * @param name 設定する名前
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param name 名前
+     * @param value 値
+     * @param type このNBTのタイプ
+     */
     public NBT(String name, Object value,int type) {
         this.name = name;
         this.value = value;
         this.type=type;
     }
+
+    /**
+     * @param name 名前
+     * @param type このNBTのタイプ(TAG_List)
+     * @param list_type このNBTのリストのタイプ
+     */
     public NBT(String name,int type,int list_type) {
         this.name = name;
         this.type=type;
         this.list_type=list_type;
     }
+
+    /**
+     * valueを取得する
+     * @return このNBTの値
+     */
     public Object getValue(){
         return value;
     }
+
+    /**
+     * valueを設定する
+     * @param value 設定する値
+     * @exception IllegalStateException リストの中身が1以上の時
+     */
     public void setValue(Object value){
         if(0<data.size()){
-            throw new IllegalStateException("dataが既に設定されています");
+            throw new IllegalStateException("リストが既に設定されています");
         }
         this.value=value;
     }
-    public List<NBT> getNBT(String path){
+
+    /**
+     * 指定したパスのNBTを取得する
+     * パスの形式は"test.example"のように
+     * 「.」で分ける
+     * @param path 取得したいNBTのパス
+     * @return 結果
+     */
+    public @NotNull List<NBT> getNBT(String path){
         List<NBT> list=new ArrayList<>(data);
         List<NBT> result=new ArrayList<>();
         String[] paths=path.split("\\.");
@@ -60,14 +155,34 @@ public class NBT implements Cloneable{
         }
         return result;
     }
+
+    /**
+     * データにNBTを追加する
+     * @param nbt 増やすNBT
+     * @return 自分自身
+     */
     public NBT add(NBT nbt){
         this.data.add(nbt);
         return this;
     }
-    public void write(DataOutputStream output) throws IOException{
+
+    /**
+     * 指定した場所にのNBTを書き込む
+     * @param output 書き込み先
+     * @throws IOException
+     */
+    public void write(@NotNull DataOutputStream output) throws IOException{
         write(output,true,true);
     }
-    public void write(DataOutputStream output,boolean needTellType,boolean needTellName) throws IOException{
+
+    /**
+     * 指定した場所に指定した状態でこのNBTを書き込む
+     * @param output 書き込み先
+     * @param needTellType 自分のタイプを書き込むか
+     * @param needTellName 自分の名前を書き込むか
+     * @throws IOException
+     */
+    void write(@NotNull DataOutputStream output,boolean needTellType,boolean needTellName) throws IOException{
         if(needTellType) {
             output.writeByte(type);
         }
@@ -158,7 +273,8 @@ public class NBT implements Cloneable{
         builder.append("}");
         return builder.toString();
     }
-    public String toString(int num) {
+
+    private String toString(int num) {
         StringBuilder kuhaku = new StringBuilder();
         for (int i = 0; i < num; i++) {
             kuhaku.append(" ");
@@ -175,9 +291,26 @@ public class NBT implements Cloneable{
         builder.append(kuu).append(kuu).append("}");
         return builder.toString();
     }
+
+    /**
+     * 非圧縮のデータからNBTを読み込む
+     * @param input 読み込み先
+     * @return 結果
+     * @throws IOException
+     */
     public static NBT readDataFromDataInputStream(DataInputStream input) throws IOException{
         return readDataFromDataInputStream(input,new NBT("",10),new NBTIndex(-1),1);
     }
+
+    /**
+     * 指定した状態から非圧縮のデータをNBTにする
+     * @param input 読み込み先
+     * @param compound_nbt 元のデータ
+     * @param index 今のインデックス
+     * @param finish_len 今の長さ
+     * @return 結果
+     * @throws IOException
+     */
     public static NBT readDataFromDataInputStream(DataInputStream input,NBT compound_nbt,NBTIndex index,int finish_len) throws IOException {
         int data;
         int now_len = 1;

@@ -38,26 +38,21 @@ public class NBTUtil {
         NBT nbt=new NBT("",10);
         return NBT.readDataFromDataInputStream(input,nbt,new NBTIndex(-1),len);
     }
-    public static NBT readList(@NotNull DataInputStream input,String name) throws IOException{
-        NBT list=new NBT(name==null?getName(input):name,9);
-        int TypeID=input.readByte();
-        list.list_type=TypeID;
-        int size=input.readInt();
-        if(TypeID==0&&0<size){
+    public static NBT readList(@NotNull DataInputStream input,String name) throws IOException {
+        NBT list = new NBT(name == null ? getName(input) : name, 9);
+        int TypeID = input.readByte();
+        list.setList_type(TypeID);
+        int size = input.readInt();
+        if (TypeID == 0 && 0 < size) {
             throw new RuntimeException("TypeIDは0なのにsizeは1以上です");
         }
-        if(0<size) {
-            for (int i = 0; i < size; i++) {
-                NBT nbt=(TypeID!=10?readNBT(TypeID, input,false):readCompound(input,0));
-                if(nbt==null){
-                    System.out.println("nbt is null");
-                }else {
-                    nbt.name+=" "+i;
-                    list.data.add(nbt);
-                }
+        for (int i = 0; i < size; i++) {
+            NBT nbt = (TypeID != 10 ? readNBT(TypeID, input, false) : readCompound(input, 0));
+            if (nbt == null) {
+                System.out.println("nbt is null");
+            } else {
+                list.getData().add(nbt);
             }
-        }else{
-            System.out.println("size is "+size+" "+list.name);
         }
         return list;
     }
@@ -66,34 +61,26 @@ public class NBTUtil {
         int size=input.readInt();
         if(0<=size){
             for (int i = 0; i < size; i++) {
-                list.data.add(new NBT("",(Object)input.readInt(),3));
+                list.getData().add(new NBT("",(Object)input.readInt(),3));
             }
         }else{
-            System.out.println("size is "+size+" "+list.name);
+            System.out.println("size is "+size+" "+list.getName());
         }
         return list;
     }
-    public static NBT readByteList(@NotNull DataInputStream input) throws IOException{
-        NBT list=new NBT(getName(input),7);
-        int size=input.readInt();
-        if(0<=size){
-            for (int i = 0; i < size; i++) {
-                list.data.add(new NBT("",(Object) input.readByte(),1));
-            }
-        }else{
-            System.out.println("size is "+size+" "+list.name);
+    public static NBT readByteList(@NotNull DataInputStream input) throws IOException {
+        NBT list = new NBT(getName(input), 7);
+        int size = input.readInt();
+        for (int i = 0; i < size; i++) {
+            list.getData().add(new NBT("", (Object) input.readByte(), 1));
         }
         return list;
     }
-    public static NBT readLongList(@NotNull DataInputStream input) throws IOException{
-        NBT list=new NBT(getName(input),12);
-        int size=input.readInt();
-        if(0<=size){
-            for (int i = 0; i < size; i++) {
-                list.data.add(new NBT("",input.readLong(),4));
-            }
-        }else{
-            System.out.println("size is "+size+" "+list.name);
+    public static NBT readLongList(@NotNull DataInputStream input) throws IOException {
+        NBT list = new NBT(getName(input), 12);
+        int size = input.readInt();
+        for (int i = 0; i < size; i++) {
+            list.getData().add(new NBT("", input.readLong(), 4));
         }
         return list;
     }
@@ -101,7 +88,6 @@ public class NBTUtil {
         String name="";
         if(TypeID<0){
             TypeID=input.readByte();
-            System.out.println("read "+TypeID);
         }
         if(TypeID==0) {
             return null;
@@ -124,36 +110,24 @@ public class NBTUtil {
         }else if(TypeID==6) {
             return new NBT(name, input.readDouble(),TypeID);
         }else if(TypeID==11) {
-            NBT list = new NBT(name,TypeID);
+            NBT list = new NBT(name, TypeID);
             int size = input.readInt();
-            if (0 <= size) {
-                for (int i = 0; i < size; i++) {
-                    list.data.add(new NBT(name,(Object)input.readInt(),3));
-                }
-            } else {
-                System.out.println("size is " + size + " " + list.name);
+            for (int i = 0; i < size; i++) {
+                list.getData().add(new NBT(name, (Object) input.readInt(), 3));
             }
             return list;
         }else if(TypeID==12) {
-            NBT list = new NBT("",TypeID);
+            NBT list = new NBT("", TypeID);
             int size = input.readInt();
-            if (0 <= size) {
-                for (int i = 0; i < size; i++) {
-                    list.data.add(new NBT(name, input.readLong(),4));
-                }
-            } else {
-                System.out.println("size is " + size + " " + list.name);
+            for (int i = 0; i < size; i++) {
+                list.getData().add(new NBT(name, input.readLong(), 4));
             }
             return list;
         }else if(TypeID==7) {
             NBT list = new NBT(name, TypeID);
             int size = input.readInt();
-            if (0 <= size) {
-                for (int i = 0; i < size; i++) {
-                    list.data.add(new NBT(name, (Object) input.readByte(), 1));
-                }
-            } else {
-                System.out.println("size is " + size + " " + list.name);
+            for (int i = 0; i < size; i++) {
+                list.getData().add(new NBT(name, (Object) input.readByte(), 1));
             }
             return list;
         }else if(TypeID==10) {

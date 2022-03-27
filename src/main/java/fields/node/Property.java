@@ -1,14 +1,19 @@
 package fields.node;
 
 import fields.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Property {
-    protected abstract Identifier initType();
-    final Identifier type;
+    protected abstract @NotNull Identifier initType();
+    private final Identifier type;
     public Property(){
         this.type=initType();
     }
-    public final Identifier getType(){
+    /**
+     * タイプを取得する
+     * @return タイプ
+     */
+    public final @NotNull Identifier getType(){
         return type;
     }
 }

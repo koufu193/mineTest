@@ -6,9 +6,6 @@ public class PacketValue<T>{
     public final PacketFieldType<T> TYPE;
     public T value;
     public PacketValue(@NotNull PacketFieldType<T> type,@NotNull T value){
-        if(type==null){
-            throw new IllegalArgumentException("typeがnullです");
-        }
         this.TYPE=type;
         this.value=value;
     }
