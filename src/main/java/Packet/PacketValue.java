@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class PacketValue<T>{
     public final PacketFieldType<T> TYPE;
     public T value;
-    public PacketValue(@NotNull PacketFieldType<T> type,@NotNull T value){
+    public PacketValue(@NotNull PacketFieldType<T> type,T value){
         this.TYPE=type;
         this.value=value;
     }

@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable;
  * ルートノード
  */
 public class RootNode extends Node {
-    public RootNode(@NotNull Flag type, @NotNull int[] children) {
+    public RootNode(@NotNull Flag type, int[] children) {
         super(type, children);
     }
-    public RootNode(@NotNull Flag type, @NotNull int[] children, @Nullable Integer redirect_node, boolean executable){
+    public RootNode(@NotNull Flag type, int[] children, @Nullable Integer redirect_node, boolean executable){
         super(type,children,redirect_node,executable);
     }
 }

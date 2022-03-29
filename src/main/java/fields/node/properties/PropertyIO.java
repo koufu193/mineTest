@@ -1,12 +1,9 @@
 package fields.node.properties;
 
 import fields.Identifier;
-import fields.Node;
 import fields.node.Property;
-import fields.recipe.IO.AbstractRecipeIO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import util.IOFunction;
 import util.PropertyFunction;
 import util.PropertyIOFunction;
 import util.Util;
@@ -17,7 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class PropertyIO {
-    private static HashMap<Identifier,AbstractPropertyIO<?>> ioProperties=new HashMap<>();
+    private static HashMap<Identifier,AbstractPropertyIO<? extends Property>> ioProperties=new HashMap<>();
     public static final AbstractPropertyIO<DoubleProperty> DOUBLE_PROPERTY=PropertyIOUtil.getProperty(new Identifier("brigadier", "double"), -Double.MAX_VALUE, Double.MAX_VALUE, new PropertyIOFunction<>() {
         @Override
         public void write(@NotNull Double value, @NotNull DataOutputStream output) throws IOException {
@@ -123,6 +120,16 @@ public class PropertyIO {
             return new RangeProperty(input.readBoolean());
         }
     };
+    public static final AbstractPropertyIO<Property> DEFAULT_PROPERTY = new AbstractPropertyIO<>(new Identifier("", "non")) {
+        @Override
+        public void write(@NotNull Property value, @NotNull DataOutputStream output) {
+        }
+
+        @Override
+        public @Nullable Property read(@NotNull DataInputStream input) {
+            return null;
+        }
+    };
     static{
         ioProperties.put(DOUBLE_PROPERTY.getType(),DOUBLE_PROPERTY);
         ioProperties.put(FLOAT_PROPERTY.getType(),FLOAT_PROPERTY);
@@ -133,7 +140,7 @@ public class PropertyIO {
         ioProperties.put(SCORE_HOLDER_PROPERTY.getType(),SCORE_HOLDER_PROPERTY);
         ioProperties.put(RANGE_PROPERTY.getType(),RANGE_PROPERTY);
     }
-    public static @Nullable AbstractPropertyIO<?> getPropertyIO(Identifier identifier){
+    public static @Nullable AbstractPropertyIO<? extends Property> getPropertyIO(Identifier identifier){
         return ioProperties.get(identifier);
     }
     public static Property getProperty(DataInputStream input) throws IOException{
@@ -148,33 +155,6 @@ public class PropertyIO {
             }
         }:propertyIO.read(input);
     }
-}
-abstract class AbstractPropertyIO<V extends Property>{
-    private final Identifier type;
-    public AbstractPropertyIO(Identifier type){
-        this.type=type;
-    }
-    /**
-     * タイプを取得
-     * @return タイプ
-     */
-    public final @NotNull Identifier getType() {
-        return type;
-    }
-
-    /**
-     * 指定した場所にデータを書きこむ
-     * @param value 書き込むデータ
-     * @param output 書き込み先
-     */
-    public abstract void write(@NotNull V value, @NotNull DataOutputStream output) throws IOException;
-
-    /**
-     * 指定した場所からデータを読み込む
-     * @param input 読み込み先
-     * @return 結果
-     */
-    public abstract @Nullable V read(@NotNull DataInputStream input) throws IOException;
 }
 class PropertyIOUtil{
     static boolean needMin(byte flag){

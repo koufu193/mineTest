@@ -80,6 +80,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.DECLARE_RECIPES,Play.Client.Packets);
         registerPacketInfo(Play.Client.TAGS,Play.Client.Packets);
         registerPacketInfo(Play.Client.ENTITY_STATUS,Play.Client.Packets);
+        registerPacketInfo(Play.Client.DECLARE_COMMANDS,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();

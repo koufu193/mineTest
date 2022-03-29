@@ -25,4 +25,5 @@ public abstract class MinMaxProperty<T> extends Property {
     public void setMin(T min) {
         this.min = min;
     }
+
 }

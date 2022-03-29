@@ -2,6 +2,7 @@ package Packet;
 
 import fields.*;
 import fields.array.Data;
+import fields.node.NodeUtil;
 import fields.tag.Tags;
 import org.jetbrains.annotations.NotNull;
 import util.IOFunction;
@@ -241,24 +242,26 @@ public class PacketFieldType<K>{
         }
     });
     public static final PacketFieldType<Array<Recipe>> ARRAY_OF_RECIPE=Array.getPacketFieldType(RECIPE);
-    public static final PacketFieldType<Tag> TAG=new PacketFieldType<>("TAG", 0, -1, new IOFunction<Tag>() {
+    public static final PacketFieldType<Tag> TAG=new PacketFieldType<>("TAG", 0, -1, new IOFunction<>() {
         @Override
         public void write(@NotNull Tag value, @NotNull DataOutputStream output) throws IOException {
-            Tag.write(value,output);
+            Tag.write(value, output);
         }
+
         @Override
         public Tag read(@NotNull DataInputStream input) throws IOException {
             return Tag.read(input);
         }
+
         @Override
         public int getLength(@NotNull Tag value) {
             return 0;
         }
     });
-    public static final PacketFieldType<Tags> TAGS=new PacketFieldType<>("TAGS", 0, -1, new IOFunction<Tags>() {
+    public static final PacketFieldType<Tags> TAGS=new PacketFieldType<>("TAGS", 0, -1, new IOFunction<>() {
         @Override
         public void write(@NotNull Tags value, @NotNull DataOutputStream output) throws IOException {
-            Tags.write(value,output);
+            Tags.write(value, output);
         }
 
         @Override
@@ -271,6 +274,23 @@ public class PacketFieldType<K>{
             return 0;
         }
     });
+    public static final PacketFieldType<Node> NODE=new PacketFieldType<>("NODE", 0, -1, new IOFunction<Node>() {
+        @Override
+        public void write(@NotNull Node value, @NotNull DataOutputStream output) throws IOException {
+            NodeUtil.write(value,output);
+        }
+
+        @Override
+        public Node read(@NotNull DataInputStream input) throws IOException {
+            return NodeUtil.read(input);
+        }
+
+        @Override
+        public int getLength(@NotNull Node value) {
+            return 0;
+        }
+    });
+    public static final PacketFieldType<Array<Node>> ARRAY_OF_NODE=Array.getPacketFieldType(NODE);
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;

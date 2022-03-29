@@ -16,4 +16,11 @@ public abstract class Property {
     public final @NotNull Identifier getType(){
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "Property{" +
+                "type=" + type +
+                '}';
+    }
 }

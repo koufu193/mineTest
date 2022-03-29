@@ -1,12 +1,12 @@
 package fields.node;
 
 public enum Flag {
-    ROOT(0),LITERAL(1),ARGUMENT(2);
-    int num;
-    Flag(int num){
+    ROOT((byte)0),LITERAL((byte)1),ARGUMENT((byte)2);
+    private byte num;
+    Flag(byte num){
         this.num=num;
     }
-    public int getNum() {
+    public byte getNum() {
         return num;
     }
     public static Flag getFlag(int value){

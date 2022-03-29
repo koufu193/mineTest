@@ -7,43 +7,45 @@ import fields.node.node.NameableNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * 引数ノード
  */
 public class ArgumentNode extends NameableNode {
     private Property property;
     private Identifier suggestion_type;
-    public ArgumentNode(@NotNull Flag type, @NotNull int[] children,@NotNull String name) {
+    public ArgumentNode(@NotNull Flag type, int[] children,@NotNull String name) {
         super(type, children,name);
     }
-    public ArgumentNode(@NotNull Flag type, @NotNull int[] children,@NotNull String name, @Nullable Integer redirect_node, boolean executable) {
+    public ArgumentNode(@NotNull Flag type, int[] children,@NotNull String name, @Nullable Integer redirect_node, boolean executable) {
         super(type, children,name, redirect_node, executable);
     }
-    public ArgumentNode(@NotNull Flag type, @NotNull int[] children,@NotNull String name,@Nullable Property property){
+    public ArgumentNode(@NotNull Flag type, int[] children,@NotNull String name,@Nullable Property property){
         super(type,children,name);
         this.property=property;
     }
-    public ArgumentNode(@NotNull Flag type,@NotNull int[] children,@NotNull String name,@Nullable Identifier suggestions_type){
+    public ArgumentNode(@NotNull Flag type, int[] children, @NotNull String name, @Nullable Identifier suggestions_type){
         super(type,children,name);
         this.suggestion_type=suggestions_type;
     }
-    public ArgumentNode(@NotNull Flag type,@NotNull int[] children,@NotNull String name,@Nullable Integer redirect_node,boolean executable,@Nullable Property property,@Nullable Identifier suggestion_type){
+    public ArgumentNode(@NotNull Flag type, int[] children, @NotNull String name, @Nullable Integer redirect_node, boolean executable, @NotNull Property property, @Nullable Identifier suggestion_type){
         this(type,children,name,redirect_node,executable);
         this.property=property;
         this.suggestion_type=suggestion_type;
     }
     /**
      * プロパティを取得
-     * @return プロパティがないならnull
+     * @return プロパティ
      */
-    public final @Nullable Property getProperty() {
+    public final @NotNull Property getProperty() {
         return property;
     }
     /**
      * プロパティを設定
      * @param property 設定するプロパティ
      */
-    public final void setProperty(@Nullable Property property) {
+    public final void setProperty(@NotNull Property property) {
         this.property = property;
     }
     /**
@@ -65,7 +67,22 @@ public class ArgumentNode extends NameableNode {
      * プロパティのタイプを取得
      * @return プロパティのタイプ
      */
-    public final @Nullable Identifier getPropertyType(){
-        return property==null?null:property.getType();
+    public final @NotNull Identifier getPropertyType(){
+        return property.getType();
+    }
+
+    @Override
+    public byte getFlag() {
+        return (byte) (super.getFlag()|(getSuggestion_type()!=null?0x10:0x00));
+    }
+    @Override
+    public String toString() {
+        return getType()+"{" +
+                "name="+getName()+
+                ", redirect_node=" + getRedirect_node() +
+                ", executable=" + isExecutable() +
+                ", property="+getProperty()+
+                ", children=" + Arrays.toString(getChildren()) +
+                '}';
     }
 }
