@@ -1,4 +1,4 @@
-package util;
+package fields;
 
 import Packet.PacketFieldType;
 import org.jetbrains.annotations.NotNull;

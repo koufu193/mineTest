@@ -1,14 +1,11 @@
 package Packet;
 
 import fields.Array;
-import fields.array.Data;
+import fields.Optional;
+import util.Data;
 import org.jetbrains.annotations.NotNull;
-import util.IOFunction;
 import util.Util;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 public class PacketType {
@@ -64,6 +61,8 @@ public class PacketType {
             public static final PacketInfo TAGS=new PacketInfo(0x67,"TAGS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(Array.getPacketFieldType(PacketFieldType.TAGS)).build());
             public static final PacketInfo ENTITY_STATUS=new PacketInfo(0x1b,"ENTITY_STATUS",PacketFieldType.INT,PacketFieldType.BYTE);
             public static final PacketInfo DECLARE_COMMANDS=new PacketInfo(0x12,"DECLARE_COMMANDS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(PacketFieldType.ARRAY_OF_NODE).add(PacketFieldType.VARINT).build());
+            public static final PacketInfo UNLOCK_RECIPES=new PacketInfo(0x39,"UNLOCK_RECIPES",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{},b->Data.map.put("action",b)).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.VARINT,a->{},Data::setSize).add(PacketFieldType.ARRAY_OF_IDENTIFIER).add(new Optional<Integer>(PacketFieldType.VARINT,()->Data.map.containsKey("action"),()->Data.map.containsKey("action")),a->{},Data::setSize).add(PacketFieldType.ARRAY_OF_IDENTIFIER).build());
+            // TODO: 2022/03/31 PLAYER_INFOの追加
         }
     }
     static{
@@ -81,6 +80,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.TAGS,Play.Client.Packets);
         registerPacketInfo(Play.Client.ENTITY_STATUS,Play.Client.Packets);
         registerPacketInfo(Play.Client.DECLARE_COMMANDS,Play.Client.Packets);
+        registerPacketInfo(Play.Client.UNLOCK_RECIPES,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();

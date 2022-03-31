@@ -1,18 +1,14 @@
 package Packet;
 
-import fields.array.Data;
+import util.Data;
 import game.PacketSender;
 import org.jetbrains.annotations.NotNull;
-import org.xerial.snappy.Snappy;
-import org.xerial.snappy.pure.SnappyRawDecompressor;
 import util.Util;
 
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
-
-import static Packet.PacketFieldType.VARINT;
 
 public class PacketData {
     int PacketID;
@@ -94,6 +90,7 @@ public class PacketData {
             for (int i = 0; i < types.length; i++) {
                 data.getData().get(i).value = types[i].read(input);
             }
+            data.getData().removeIf(b->b.value==null);
             return data;
         }
         System.out.println("What is "+PacketID);

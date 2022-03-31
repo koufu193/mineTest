@@ -1,7 +1,7 @@
 package Packet;
 
 import fields.*;
-import fields.array.Data;
+import util.Data;
 import fields.node.NodeUtil;
 import fields.tag.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +88,7 @@ public class PacketFieldType<K>{
 
         @Override
         public Chat read(@NotNull DataInputStream input) throws IOException {
-            return new Chat(Util.readString(input));
+            return Chat.read(input);
         }
 
         @Override

@@ -1,10 +1,9 @@
 package fields;
 
 import Packet.PacketFieldType;
-import fields.array.Data;
+import util.Data;
 import org.jetbrains.annotations.NotNull;
 import util.IOFunction;
-import util.Util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
