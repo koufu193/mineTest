@@ -274,10 +274,10 @@ public class PacketFieldType<K>{
             return 0;
         }
     });
-    public static final PacketFieldType<Node> NODE=new PacketFieldType<>("NODE", 0, -1, new IOFunction<Node>() {
+    public static final PacketFieldType<Node> NODE=new PacketFieldType<>("NODE", 0, -1, new IOFunction<>() {
         @Override
         public void write(@NotNull Node value, @NotNull DataOutputStream output) throws IOException {
-            NodeUtil.write(value,output);
+            NodeUtil.write(value, output);
         }
 
         @Override
@@ -291,6 +291,77 @@ public class PacketFieldType<K>{
         }
     });
     public static final PacketFieldType<Array<Node>> ARRAY_OF_NODE=Array.getPacketFieldType(NODE);
+    public static final PacketFieldType<Double> DOUBLE=new PacketFieldType<>("DOUBLE", 64, 64, new IOFunction<>() {
+        @Override
+        public void write(@NotNull Double value, @NotNull DataOutputStream output) throws IOException {
+            output.writeDouble(value);
+        }
+
+        @Override
+        public Double read(@NotNull DataInputStream input) throws IOException {
+            return input.readDouble();
+        }
+
+        @Override
+        public int getLength(@NotNull Double value) {
+            return 64;
+        }
+    });
+    public static final PacketFieldType<long[]> BITSET=new PacketFieldType<>("BITSET", 0, 0, new IOFunction<>() {
+        @Override
+        public void write(long @NotNull [] value, @NotNull DataOutputStream output) throws IOException {
+            Util.writeVarInt(value.length, output);
+            for (long l : value) {
+                output.writeLong(l);
+            }
+        }
+
+        @Override
+        public long[] read(@NotNull DataInputStream input) throws IOException {
+            long[] result = new long[Util.readVarInt(input)];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = input.readLong();
+            }
+            return result;
+        }
+
+        @Override
+        public int getLength(long @NotNull [] value) {
+            return value.length * 64 + Util.getVarLength(value.length);
+        }
+    });
+    public static final PacketFieldType<Short> SHORT=new PacketFieldType<>("SHORT", 16, 16, new IOFunction<>() {
+        @Override
+        public void write(@NotNull Short value, @NotNull DataOutputStream output) throws IOException {
+            output.writeShort(value);
+        }
+
+        @Override
+        public Short read(@NotNull DataInputStream input) throws IOException {
+            return input.readShort();
+        }
+
+        @Override
+        public int getLength(@NotNull Short value) {
+            return 16;
+        }
+    });
+    public static final PacketFieldType<Slot> SLOT=new PacketFieldType<>("SLOT", 0, -1, new IOFunction<>() {
+        @Override
+        public void write(@NotNull Slot value, @NotNull DataOutputStream output) throws IOException {
+            Slot.write(value,output);
+        }
+
+        @Override
+        public Slot read(@NotNull DataInputStream input) throws IOException {
+            return Slot.read(input);
+        }
+
+        @Override
+        public int getLength(@NotNull Slot value) {
+            return 0;
+        }
+    });
     private final IOFunction<K> ioFunction;
     public final String name;
     public final int max;

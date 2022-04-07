@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerInfo {
     public static class Property {
@@ -73,7 +74,17 @@ public class PlayerInfo {
         }
     }
     public static class Player{
-        public static class AddPlayer{
+        public static abstract class AbstractPlayer{
+            protected UUID uuid;
+            public void setUUID(@NotNull UUID uuid){
+                this.uuid=uuid;
+            }
+
+            public UUID getUuid() {
+                return uuid;
+            }
+        }
+        public static class AddPlayer extends AbstractPlayer{
             private String name;
             private List<Property> properties;
             private int gamemode;
@@ -151,7 +162,7 @@ public class PlayerInfo {
                         '}';
             }
         }
-        public static class UpdateGamemode{
+        public static class UpdateGamemode extends AbstractPlayer{
             private int gamemode;
             public UpdateGamemode(int gamemode){
                 this.gamemode=gamemode;
@@ -176,7 +187,7 @@ public class PlayerInfo {
                         '}';
             }
         }
-        public static class UpdateLatency{
+        public static class UpdateLatency extends AbstractPlayer{
             private int ping;
             public UpdateLatency(int ping){
                 this.ping=ping;
@@ -201,7 +212,7 @@ public class PlayerInfo {
                         '}';
             }
         }
-        public static class UpdateDisplayName{
+        public static class UpdateDisplayName extends AbstractPlayer{
             private Chat display_name;
             public UpdateDisplayName(@Nullable Chat display_name){
                 this.display_name=display_name;
@@ -233,7 +244,7 @@ public class PlayerInfo {
                 return new UpdateDisplayName(null);
             }
         }
-        public static class RemovePlayer{
+        public static class RemovePlayer extends AbstractPlayer{
             @Override
             public String toString() {
                 return "RemovePlayer{}";

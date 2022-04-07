@@ -2,10 +2,15 @@ package Packet;
 
 import fields.Array;
 import fields.Optional;
+import fields.actions.PlayerInfo;
 import util.Data;
 import org.jetbrains.annotations.NotNull;
+import util.IOFunction;
 import util.Util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class PacketType {
@@ -62,7 +67,36 @@ public class PacketType {
             public static final PacketInfo ENTITY_STATUS=new PacketInfo(0x1b,"ENTITY_STATUS",PacketFieldType.INT,PacketFieldType.BYTE);
             public static final PacketInfo DECLARE_COMMANDS=new PacketInfo(0x12,"DECLARE_COMMANDS",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{}, Data::setSize).add(PacketFieldType.ARRAY_OF_NODE).add(PacketFieldType.VARINT).build());
             public static final PacketInfo UNLOCK_RECIPES=new PacketInfo(0x39,"UNLOCK_RECIPES",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{},b->Data.map.put("action",b)).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.BOOLEAN).add(PacketFieldType.VARINT,a->{},Data::setSize).add(PacketFieldType.ARRAY_OF_IDENTIFIER).add(new Optional<Integer>(PacketFieldType.VARINT,()->Data.map.containsKey("action"),()->Data.map.containsKey("action")),a->{},Data::setSize).add(PacketFieldType.ARRAY_OF_IDENTIFIER).build());
-            // TODO: 2022/03/31 PLAYER_INFOの追加
+            public static final PacketInfo PLAYER_INFO=new PacketInfo(0x36,"PLAYER_INFO",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{},b->Data.map.put("player_info_action",b)).add(PacketFieldType.VARINT,a->{},Data::setSize).add(Array.getPacketFieldType(new PacketFieldType<PlayerInfo.Player.AbstractPlayer>("action", 0, -1, new IOFunction<>() {
+                @Override
+                public void write(@NotNull PlayerInfo.Player.AbstractPlayer value, @NotNull DataOutputStream output) {
+                    //Not support
+                }
+
+                @Override
+                public PlayerInfo.Player.AbstractPlayer read(@NotNull DataInputStream input) throws IOException {
+                    int action = Data.map.getOrDefault("player_info_action", 5);
+                    UUID uuid = PacketFieldType.UUID.read(input);
+                    PlayerInfo.Player.AbstractPlayer player = switch (action) {
+                        case 0 -> PlayerInfo.Player.AddPlayer.read(input);
+                        case 1 -> PlayerInfo.Player.UpdateGamemode.read(input);
+                        case 2 -> PlayerInfo.Player.UpdateLatency.read(input);
+                        case 3 -> PlayerInfo.Player.UpdateDisplayName.read(input);
+                        case 4 -> new PlayerInfo.Player.RemovePlayer();
+                        default -> throw new RuntimeException("Player Info action:" + action);
+                    };
+                    player.setUUID(uuid);
+                    return player;
+                }
+
+                @Override
+                public int getLength(@NotNull PlayerInfo.Player.AbstractPlayer value) {
+                    return -1;
+                }
+            }))).build());
+            public static final PacketInfo PLAYER_POSITION_AND_LOOK=new PacketInfo(0x38,"PLAYER_POSITION_AND_LOOK",PacketFieldType.DOUBLE,PacketFieldType.DOUBLE,PacketFieldType.DOUBLE,PacketFieldType.FLOAT,PacketFieldType.FLOAT,PacketFieldType.BYTE,PacketFieldType.VARINT,PacketFieldType.BOOLEAN);
+            public static final PacketInfo CHAT_MESSAGE=new PacketInfo(0x0f,"CHAT_MESSAGE",PacketFieldType.CHAT,PacketFieldType.BYTE,PacketFieldType.UUID);
+            public static final PacketInfo SET_SLOT=new PacketInfo(0x16,"SET_SLOT",PacketFieldType.BYTE,PacketFieldType.VARINT,PacketFieldType.SHORT,PacketFieldType.SLOT);
         }
     }
     static{
@@ -81,6 +115,10 @@ public class PacketType {
         registerPacketInfo(Play.Client.ENTITY_STATUS,Play.Client.Packets);
         registerPacketInfo(Play.Client.DECLARE_COMMANDS,Play.Client.Packets);
         registerPacketInfo(Play.Client.UNLOCK_RECIPES,Play.Client.Packets);
+        registerPacketInfo(Play.Client.PLAYER_INFO,Play.Client.Packets);
+        registerPacketInfo(Play.Client.PLAYER_POSITION_AND_LOOK,Play.Client.Packets);
+        registerPacketInfo(Play.Client.SET_SLOT,Play.Client.Packets);
+        registerPacketInfo(Play.Client.CHAT_MESSAGE,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();
