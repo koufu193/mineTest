@@ -17,15 +17,13 @@ public class PacketSender {
     private DataInputStream input;
     private DataOutputStream output;
     private final Socket socket;
-    private String host;
-    private int port;
+    Server server;
     public int compressed_chunk_size=-10;
     Logger logger;
 
     public PacketType.PacketState state= PacketType.PacketState.Login;
     public PacketSender(@NotNull String host, int port) throws IOException {
-        this.host=host;
-        this.port=port;
+        server=new Server(host,port);
         socket=new Socket(host,port);
         input=new DataInputStream(socket.getInputStream());
         output=new DataOutputStream(socket.getOutputStream());
@@ -35,6 +33,11 @@ public class PacketSender {
         checkSocket();
         socket.close();
     }
+
+    public Server getServer() {
+        return server;
+    }
+
     public User sendLoginPacket(@NotNull String player_name) throws IOException{
         sendLoginHandshake();
         Util.sendPacket(0x00,Util.getData(b->Util.writeString(player_name,StandardCharsets.UTF_8,b)),output);
@@ -54,8 +57,8 @@ public class PacketSender {
         checkSocket();
         Util.sendPacket(0x00,Util.getData(b->{
             Util.writeVarInt(757,b);
-            Util.writeString(host, StandardCharsets.UTF_8,b);
-            b.writeShort(port);
+            Util.writeString(getServer().name, StandardCharsets.UTF_8,b);
+            b.writeShort(getServer().port);
             Util.writeVarInt(next_state,b);
         }),output);;
     }

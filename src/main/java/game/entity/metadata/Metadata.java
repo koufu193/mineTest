@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class Metadata {
+    public static Metadata metadata=null;
     /**
      * 自分自身のデータを変える
      * @param input 読み込み先
@@ -21,14 +22,18 @@ public abstract class Metadata {
     protected final void writeIndex(int index,DataOutputStream output) throws IOException{
         output.writeByte(index);
     }
-    public static void write(@NotNull EntityMetadata metadata,@NotNull DataOutputStream output) throws IOException{
+    public static void write(@NotNull Metadata metadata,@NotNull DataOutputStream output) throws IOException{
         metadata.write(output);
         output.writeByte(0xff);
     }
-    public static void read(@NotNull EntityMetadata metadata,@NotNull DataInputStream input) throws IOException{
+    public static void read(@NotNull Metadata metadata,@NotNull DataInputStream input) throws IOException{
         int index;
         while((index=input.readUnsignedByte())!=0xff){
             metadata.read(index,input);
         }
+    }
+
+    public static void setMetadata(Metadata metadata) {
+        Metadata.metadata = metadata;
     }
 }

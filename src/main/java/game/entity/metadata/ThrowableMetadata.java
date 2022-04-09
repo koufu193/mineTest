@@ -15,9 +15,10 @@ public class ThrowableMetadata extends EntityMetadata{
     }
     @Override
     public void read(int index, @NotNull DataInputStream input) throws IOException {
-        super.read(index, input);
         if(index==8){
             this.item=Slot.read(input);
+        }else{
+            super.read(index, input);
         }
     }
     @Override
@@ -26,5 +27,12 @@ public class ThrowableMetadata extends EntityMetadata{
         if(item!=null){
             Slot.write(item,output);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ThrowableMetadata{" +
+                "item=" + item +
+                "} " + super.toString();
     }
 }

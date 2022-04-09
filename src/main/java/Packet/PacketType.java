@@ -1,8 +1,11 @@
 package Packet;
 
+import com.sun.tools.javac.Main;
 import fields.Array;
 import fields.Optional;
 import fields.actions.PlayerInfo;
+import game.entity.metadata.EntityMetadata;
+import game.entity.metadata.Metadata;
 import util.Data;
 import org.jetbrains.annotations.NotNull;
 import util.IOFunction;
@@ -97,6 +100,7 @@ public class PacketType {
             public static final PacketInfo PLAYER_POSITION_AND_LOOK=new PacketInfo(0x38,"PLAYER_POSITION_AND_LOOK",PacketFieldType.DOUBLE,PacketFieldType.DOUBLE,PacketFieldType.DOUBLE,PacketFieldType.FLOAT,PacketFieldType.FLOAT,PacketFieldType.BYTE,PacketFieldType.VARINT,PacketFieldType.BOOLEAN);
             public static final PacketInfo CHAT_MESSAGE=new PacketInfo(0x0f,"CHAT_MESSAGE",PacketFieldType.CHAT,PacketFieldType.BYTE,PacketFieldType.UUID);
             public static final PacketInfo SET_SLOT=new PacketInfo(0x16,"SET_SLOT",PacketFieldType.BYTE,PacketFieldType.VARINT,PacketFieldType.SHORT,PacketFieldType.SLOT);
+            public static final PacketInfo ENTITY_METADATA=new PacketInfo(0x4d,"ENTITY_METADATA",PacketFieldBuilder.makeBlock().add(PacketFieldType.VARINT,a->{},b->Metadata.setMetadata(util.Main.getWorld().getEntity(b).getMetadata())).add(PacketFieldType.ENTITY_METADATA).build());
         }
     }
     static{
@@ -119,6 +123,7 @@ public class PacketType {
         registerPacketInfo(Play.Client.PLAYER_POSITION_AND_LOOK,Play.Client.Packets);
         registerPacketInfo(Play.Client.SET_SLOT,Play.Client.Packets);
         registerPacketInfo(Play.Client.CHAT_MESSAGE,Play.Client.Packets);
+        registerPacketInfo(Play.Client.ENTITY_METADATA,Play.Client.Packets);
     }
     public static Set<HashMap<Integer,PacketInfo>> getClientPackets(){
         Set<HashMap<Integer,PacketInfo>> result=new HashSet<>();

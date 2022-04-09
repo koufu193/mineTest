@@ -15,10 +15,20 @@ public class User {
     boolean enable_text_filtering=false;
     boolean allow_server_listing=true;
     int chat_mode=0;
+    World world=null;
     public User(@NotNull UUID uuid,@NotNull String name){
         this.uuid=uuid;
         this.name=name;
     }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
     public String getName() {
         return name;
     }

@@ -1,6 +1,8 @@
 package Packet;
 
 import fields.*;
+import game.entity.metadata.EntityMetadata;
+import game.entity.metadata.Metadata;
 import util.Data;
 import fields.node.NodeUtil;
 import fields.tag.Tags;
@@ -359,6 +361,23 @@ public class PacketFieldType<K>{
 
         @Override
         public int getLength(@NotNull Slot value) {
+            return 0;
+        }
+    });
+    public static final PacketFieldType<Metadata> ENTITY_METADATA=new PacketFieldType<>("ENTITY_METADATA", 0, -1, new IOFunction<>() {
+        @Override
+        public void write(@NotNull Metadata value, @NotNull DataOutputStream output) throws IOException {
+            Metadata.write(value, output);
+        }
+
+        @Override
+        public Metadata read(@NotNull DataInputStream input) throws IOException {
+            Metadata.read(Metadata.metadata, input);
+            return Metadata.metadata;
+        }
+
+        @Override
+        public int getLength(@NotNull Metadata value) {
             return 0;
         }
     });

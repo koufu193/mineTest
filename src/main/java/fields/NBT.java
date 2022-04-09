@@ -17,6 +17,24 @@ import java.util.Objects;
  * NBTファイルを操作するクラス
  */
 public class NBT implements Cloneable{
+    public static final NBT NONE=new NBT("",10){
+        @Override
+        public void setName(String name) {
+        }
+        @Override
+        public void setData(List<NBT> data) {
+        }
+        @Override
+        public void setList_type(int list_type) {
+        }
+        @Override
+        public void setValue(Object value) {
+        }
+        @Override
+        public NBT add(NBT nbt) {
+            return this;
+        }
+    };
     private String name;
     private List<NBT> data = new ArrayList<>();
     private Object value=null;

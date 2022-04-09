@@ -125,4 +125,18 @@ public class EntityMetadata extends Metadata {
         writeIndex(7,output);
         Util.writeVarInt(getFrozenTicks(),output);
     }
+
+    @Override
+    public String toString() {
+        return "EntityMetadata{" +
+                "status=" + status +
+                ", air_ticks=" + air_ticks +
+                ", custom_name=" + custom_name +
+                ", isCustom_name_visible=" + isCustom_name_visible +
+                ", isSilent=" + isSilent +
+                ", hasNo_gravity=" + hasNo_gravity +
+                ", pose=" + pose +
+                ", frozen_ticks=" + frozen_ticks +
+                '}';
+    }
 }

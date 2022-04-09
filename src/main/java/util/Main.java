@@ -1,6 +1,13 @@
+package util;
+
 import Packet.*;
+import fields.Array;
+import fields.Identifier;
 import game.PacketSender;
 import game.User;
+import game.World;
+import game.entity.Player;
+import game.entity.metadata.PlayerMetadata;
 import info.ClientInfo;
 import util.Util;
 
@@ -8,14 +15,19 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Main {
+    static PacketSender sender=null;
+    static User user;
     public static void main(String[] args) {
-        PacketSender sender=null;
-        User user;
         try{
             sender = new PacketSender("localhost", 25565);
             user=sender.sendLoginPacket("example");
             System.out.println("name:"+user.getName()+",UUID:"+user.getUUID());
-            PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state, sender.compressed_chunk_size);//Join Game
+            PacketData d=PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client, sender.state, sender.compressed_chunk_size);//Join Game
+            for(Identifier identifier:((Array<Identifier>)d.getData().get(5).value).data){
+                sender.getServer().getWorlds().add(new World(identifier));
+            }
+            user.setWorld(sender.getServer().getWorld((Identifier)d.getData().get(8).value));
+            user.getWorld().getEntities().add(new Player(user.getUUID(),(Integer)d.getData().get(0).value,new PlayerMetadata()));
             PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size);
             PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size);
             System.out.println(PacketData.fromInputStream(sender.getInput(), PacketType.Sender.Client,sender.state, sender.compressed_chunk_size));
@@ -63,5 +75,8 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+    public static World getWorld(){
+        return user.getWorld();
     }
 }
