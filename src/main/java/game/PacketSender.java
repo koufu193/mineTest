@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public class PacketSender {
+public class PacketSender implements Closeable{
     private DataInputStream input;
     private DataOutputStream output;
     private final Socket socket;
@@ -28,10 +28,6 @@ public class PacketSender {
         input=new DataInputStream(socket.getInputStream());
         output=new DataOutputStream(socket.getOutputStream());
         logger= LoggerFactory.getLogger(getClass());
-    }
-    public void disconnect() throws IOException {
-        checkSocket();
-        socket.close();
     }
 
     public Server getServer() {
@@ -51,7 +47,7 @@ public class PacketSender {
             data=PacketData.fromInputStream(input, PacketType.Sender.Client,state,compressed_chunk_size);
         }
         state=PacketType.PacketState.Play;
-        return new User((UUID)data.getData().get(0).value,data.data.get(1).value.toString());
+        return new User(data.getUUID(0),data.data.get(1).value.toString());
     }
     public void sendHandshake(int next_state) throws IOException{
         checkSocket();
@@ -87,5 +83,11 @@ public class PacketSender {
 
     public DataOutputStream getOutput() {
         return output;
+    }
+
+    @Override
+    public void close() throws IOException {
+        checkSocket();
+        socket.close();
     }
 }

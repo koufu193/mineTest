@@ -1,4 +1,4 @@
-package util;
+package game;
 
 import Packet.*;
 import fields.Array;
@@ -12,6 +12,7 @@ import info.ClientInfo;
 import util.Util;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class Main {
@@ -19,6 +20,17 @@ public class Main {
     static User user;
     public static void main(String[] args) {
         try{
+            /*try(PacketSender s=new PacketSender("localhost",25565)){
+                s.sendHandshake(1);
+                s.state= PacketType.PacketState.Status;
+                Util.sendPacket(0x00,new byte[0],s);
+                System.out.println(PacketData.fromInputStream(s, PacketType.Sender.Client));
+                Util.sendPacket(0x01, ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array(),s);
+                System.out.println(PacketData.fromInputStream(s, PacketType.Sender.Client));
+            }catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("closed");
+            }Status*/
             sender = new PacketSender("localhost", 25565);
             user=sender.sendLoginPacket("example");
             System.out.println("name:"+user.getName()+",UUID:"+user.getUUID());
@@ -59,6 +71,8 @@ public class Main {
             System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
             System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
             System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
+            System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
+            System.out.println(PacketData.fromInputStream(sender, PacketType.Sender.Client));
 
             Util.sendPacket(0x03, Util.getData(b ->Util.writeString("aaaaa", StandardCharsets.UTF_8, b)), sender.getOutput(), sender.compressed_chunk_size);
             while (true) {
@@ -69,7 +83,7 @@ public class Main {
         } finally {
             try {
                 if (sender != null) {
-                    sender.disconnect();
+                    sender.close();
                 }
             }catch (IOException e){
                 e.printStackTrace();

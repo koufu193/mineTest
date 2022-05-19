@@ -29,10 +29,10 @@ public abstract class Metadata {
     public static void read(@NotNull Metadata metadata,@NotNull DataInputStream input) throws IOException{
         int index;
         while((index=input.readUnsignedByte())!=0xff){
+            input.readByte();
             metadata.read(index,input);
         }
     }
-
     public static void setMetadata(Metadata metadata) {
         Metadata.metadata = metadata;
     }

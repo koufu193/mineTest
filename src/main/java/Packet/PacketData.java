@@ -1,5 +1,7 @@
 package Packet;
 
+import fields.NBT;
+import org.jetbrains.annotations.Nullable;
 import util.Data;
 import game.PacketSender;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +29,55 @@ public class PacketData {
     public int getPacketID() {
         return PacketID;
     }
-
+    public int getInt(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).intValue();
+    }
+    public long getLong(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).longValue();
+    }
+    public float getFloat(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).floatValue();
+    }
+    public short getShort(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).shortValue();
+    }
+    public byte getByte(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).byteValue();
+    }
+    public double getDouble(int index){
+        Object value=data.get(index).value;
+        check(value instanceof Number,"valueをNumberにキャストできませんでした");
+        return ((Number)value).doubleValue();
+    }
+    public @Nullable NBT getNBT(int index){
+        Object value=data.get(index).value;
+        if(value instanceof NBT) {
+            return (NBT) value;
+        }
+        return null;
+    }
+    public @Nullable UUID getUUID(int index){
+        Object value=data.get(index).value;
+        if(value instanceof UUID) {
+            return (UUID)value;
+        }
+        return null;
+    }
+    private void check(boolean check,String message){
+        if(!check){
+            throw new RuntimeException(message);
+        }
+    }
     @Override
     public String toString() {
         return "PacketData{" +
@@ -35,7 +85,6 @@ public class PacketData {
                 ", data=" + data +
                 '}';
     }
-
     public static PacketData fromInputStream(@NotNull DataInputStream input,@NotNull PacketType.Sender sender,@NotNull PacketType.PacketState state) throws IOException {
         //DataInputStreamからパケットに変換処理
         int length=Util.readVarInt(input);
@@ -93,7 +142,7 @@ public class PacketData {
             data.getData().removeIf(b->b.value==null);
             return data;
         }
-        System.out.println("What is "+PacketID);
+        System.out.println("What is "+Integer.toHexString(PacketID));
         return null;
     }
 }
